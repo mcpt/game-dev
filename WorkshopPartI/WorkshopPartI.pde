@@ -62,7 +62,7 @@ void drawEnemy(PVector currentlocation) {
 // Checking to see if mouse pointer is within the boundaries of the object
 // or to check if picking up is valid (e.g. does the user have enough money to purchase the tower?)
 boolean withinBounds() {
-  return (mouseX - curTowerX) * (mouseX - curTowerX) + (mouseY - curTowerY) * (mouseY - curTowerY) <= 169;
+  return Math.abs(mouseX - x) <= 13 && Math.abs(mouseY - y) <= 13; // Use the difference in x and y from the centre of the square to check for bounds
 }
 
 // Will be called whenever a tower is placed down
@@ -83,7 +83,7 @@ void handlePickUp() {
 // Draw a tower at centre location (xPos, yPos)
 // To be customized later on (a simple shape will do for now)
 void drawTowerIcon(float xPos, float yPos) {
-  ellipse(xPos, yPos, 25, 25); // Draw a simple ellipse as the tower
+  rect(xPos, yPos, 25, 25); // Draw a simple square as the tower
 }
 
 // Used to draw all the towers that were already dropped into the map
