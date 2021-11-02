@@ -5,7 +5,7 @@ ArrayList<PVector> enemyLocation;
 ArrayList<Float> enemySpeed;
 final PVector enemyStartLocation = new PVector(0, 0); // Add values to this 
 int framesElapsed;
-PathGenerator path = new PathGenerator(800, 500);
+PathGenerator path = new PathGenerator();
 // Variables for Drag and Drop
 int curTowerX, curTowerY; // The coordinates of the centre of the currently held tower
 int difX, difY; // The distance between the mouse pointer and the centre of the current held tower
