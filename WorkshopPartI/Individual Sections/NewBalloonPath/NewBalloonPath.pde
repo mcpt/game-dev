@@ -1,7 +1,11 @@
 //-----GLOBAL VARIABLES------
 
+int cooldown = 20;
+int framesElapsed = 0;
+
 int currentLevel = 0;
 PathGenerator path = new PathGenerator();
+ArrayList<Projectile> projectiles = new ArrayList<>();
 //
 final int rectX = 50;
 final int rectY = 50;
@@ -71,12 +75,13 @@ void updatePositions(float[] balloonProps){
 
 //Rotates tower to face the first initial balloon
 void rotateBuilding(float distanceTravelled, boolean targetFound){
-  
+  framesElapsed++;
   //Shows which balloon is being tracked
   PVector position = path.getLocation(distanceTravelled);
   
-  if (targetFound)
+  if (targetFound) {
     line(rectX,rectY,position.x,position.y);
+  }
   
   translate(rectX,rectY); //Ensures center of rotation is the tower
   // Angle calculation
@@ -90,6 +95,12 @@ void rotateBuilding(float distanceTravelled, boolean targetFound){
     angle = atan(slope);
   }
   
+  //if (targetFound && framesElapsed % cooldown == 0) {
+  //  float speed = 25;
+  //  float split = PI / 16;
+  //  for (int i = -5; i <= 5; i++)
+  //    projectiles.add(new Projectile(new PVector(rectX, rectY), new PVector(cos(angle + split * i) * speed, sin(angle + split * i) * speed)));
+  //}
   rotate(angle);
 
   //Tower
@@ -112,6 +123,7 @@ void setup(){
   path.add(750, 450);
   path.add(100, 200);
   path.add(750, 50);
+  path.add(400, 300);
   size(800,500);
   ellipseMode(CENTER);
   rectMode(CENTER);
@@ -120,11 +132,22 @@ void setup(){
 
 void draw(){
   background(255);
+  fill(255);
   path.draw();
   //Iterates through all balloons
   for(int balloonNum = 0; balloonNum < level1.length; balloonNum++){
     updatePositions(level1[balloonNum]);
   }
+  
+  float dist = path.shortestDist(new PVector(mouseX, mouseY));
+  
+  fill(0);
+  if(dist <= PATH_RADIUS) {
+    text("Cannot Place", 550, 50);
+  } else {
+    text("Can Place", 550, 50);
+  }
+  fill(255);
   
   //Tower
   pushMatrix();
@@ -147,6 +170,17 @@ void draw(){
     lastTarget = level1[index][0];
     targetFound = true;
   }
+  
   rotateBuilding(lastTarget, targetFound);
   popMatrix();
+  
+  //for(Projectile p: projectiles) p.draw();
+  //int iterator = 0;
+  
+  //while (iterator < projectiles.size()) {
+  //  if(projectiles.get(iterator).outOfBounds()) {
+  //    projectiles.remove(iterator);
+  //  } else iterator++;
+  //}
+ 
 }
