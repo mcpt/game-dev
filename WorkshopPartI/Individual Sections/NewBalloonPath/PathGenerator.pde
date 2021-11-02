@@ -29,14 +29,23 @@ class PathGenerator {
     return answer;
   }
   public void draw() {
+    
+    stroke(0);
+    strokeWeight(PATH_RADIUS * 2 + 1);
+    for (int i = 0; i < points.size() - 1; i++) {
+      PVector currentPoint = points.get(i);
+      PVector nextPoint = points.get(i + 1);
+      line(currentPoint.x, currentPoint.y, nextPoint.x, nextPoint.y);
+    }
+    
     stroke(#6786FA);
     strokeWeight(PATH_RADIUS * 2);
     for (int i = 0; i < points.size() - 1; i++) {
       PVector currentPoint = points.get(i);
       PVector nextPoint = points.get(i + 1);
-      
       line(currentPoint.x, currentPoint.y, nextPoint.x, nextPoint.y);
     }
+    
     strokeWeight(1);
     stroke(0);
   }

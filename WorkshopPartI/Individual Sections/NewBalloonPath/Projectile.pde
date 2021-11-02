@@ -10,7 +10,7 @@ class Projectile {
   public void draw() {
     position.add(velocity);
     fill(255,0,0);
-    ellipse(position.x, position.y, 20, 20);
+    ellipse(position.x, position.y, 5, 5);
   }
    
 }

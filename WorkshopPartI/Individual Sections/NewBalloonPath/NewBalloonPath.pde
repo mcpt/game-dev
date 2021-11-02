@@ -95,12 +95,12 @@ void rotateBuilding(float distanceTravelled, boolean targetFound){
     angle = atan(slope);
   }
   
-  //if (targetFound && framesElapsed % cooldown == 0) {
-  //  float speed = 25;
-  //  float split = PI / 16;
-  //  for (int i = -5; i <= 5; i++)
-  //    projectiles.add(new Projectile(new PVector(rectX, rectY), new PVector(cos(angle + split * i) * speed, sin(angle + split * i) * speed)));
-  //}
+  if (targetFound && framesElapsed % cooldown == 0) {
+    float speed = 25;
+    float split = PI / 16;
+    for (int i = -2; i <= 2; i++)
+      projectiles.add(new Projectile(new PVector(rectX, rectY), new PVector(cos(angle + split * i) * speed, sin(angle + split * i) * speed)));
+  }
   rotate(angle);
 
   //Tower
@@ -174,13 +174,13 @@ void draw(){
   rotateBuilding(lastTarget, targetFound);
   popMatrix();
   
-  //for(Projectile p: projectiles) p.draw();
-  //int iterator = 0;
+  for(Projectile p: projectiles) p.draw();
+  int iterator = 0;
   
-  //while (iterator < projectiles.size()) {
-  //  if(projectiles.get(iterator).outOfBounds()) {
-  //    projectiles.remove(iterator);
-  //  } else iterator++;
-  //}
+  while (iterator < projectiles.size()) {
+    if(projectiles.get(iterator).outOfBounds()) {
+      projectiles.remove(iterator);
+    } else iterator++;
+  }
  
 }
