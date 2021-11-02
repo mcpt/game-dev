@@ -5,7 +5,7 @@ ArrayList<PVector> enemyLocation;
 ArrayList<Float> enemySpeed;
 final PVector enemyStartLocation = new PVector(0, 0); // Add values to this 
 int framesElapsed;
-
+PathGenerator path = new PathGenerator(800, 500);
 // Variables for Drag and Drop
 int curTowerX, curTowerY; // The coordinates of the centre of the currently held tower
 int difX, difY; // The distance between the mouse pointer and the centre of the current held tower
@@ -20,6 +20,17 @@ void setup() {
   enemyLocation = new ArrayList();
   enemySpeed = new ArrayList();
   
+  path.add(0, 200);
+  path.add(300, 100);
+  path.add(200, 100);
+  path.add(250, 400);
+  path.add(300, 350);
+  path.add(350, 450);
+  path.add(400, 50);
+  path.add(700, 400);
+  path.add(200, 450);
+  path.add(400, 100);
+  path.add(750, 450);
   rectMode(CENTER);
   ellipseMode(CENTER);
   
@@ -95,6 +106,7 @@ void drawAllTowers() {
   }
 }
 
+int test = 0;
 void draw() {
   drawBackground();
   spawnWaves();
@@ -106,8 +118,14 @@ void draw() {
     
     drawEnemy(nextLocation);
   }
+  path.draw();
+  test += 10;
+  
+  PVector point = path.getLocation(test);
+  ellipse(point.x, point.y, 50, 50);
   
   // Drag and Drop
+
   drawAllTowers(); // Draw all the towers that have been placed down before
   drawTowerIcon(curTowerX, curTowerY); // Draw the current tower (that the user is holding)
   drawTowerIcon(pickupX, pickupY); // Draw the pick-up tower on the top right
