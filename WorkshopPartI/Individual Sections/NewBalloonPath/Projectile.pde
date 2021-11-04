@@ -14,3 +14,14 @@ class Projectile {
   }
    
 }
+
+/*
+// Code for projectile adding
+
+if (targetFound && framesElapsed % cooldown == 0) {
+    float speed = 25;
+    float split = PI / 16;
+    for (int i = -2; i <= 2; i++)
+      projectiles.add(new Projectile(new PVector(rectX, rectY), new PVector(cos(angle + split * i) * speed, sin(angle + split * i) * speed)));
+  }
+*/

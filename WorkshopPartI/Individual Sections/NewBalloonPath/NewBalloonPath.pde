@@ -95,12 +95,7 @@ void rotateBuilding(float distanceTravelled, boolean targetFound){
     angle = atan(slope);
   }
   
-  if (targetFound && framesElapsed % cooldown == 0) {
-    float speed = 25;
-    float split = PI / 16;
-    for (int i = -2; i <= 2; i++)
-      projectiles.add(new Projectile(new PVector(rectX, rectY), new PVector(cos(angle + split * i) * speed, sin(angle + split * i) * speed)));
-  }
+  
   rotate(angle);
 
   //Tower
@@ -139,48 +134,48 @@ void draw(){
     updatePositions(level1[balloonNum]);
   }
   
-  float dist = path.shortestDist(new PVector(mouseX, mouseY));
+  //float dist = path.shortestDist(new PVector(mouseX, mouseY));
   
-  fill(0);
-  if(dist <= PATH_RADIUS) {
-    text("Cannot Place", 550, 50);
-  } else {
-    text("Can Place", 550, 50);
-  }
-  fill(255);
+  //fill(0);
+  //if(dist <= PATH_RADIUS) {
+  //  text("Cannot Place", 550, 50);
+  //} else {
+  //  text("Can Place", 550, 50);
+  //}
+  //fill(255);
   
   //Tower
   pushMatrix();
   
-  float range = 200;
-  // Finds balloon that has travelled the most that is within this range
-  int index = -1;
-  float mostSteps = 0;
-  for(int i = 0; i < level1.length; i++) {
-    if (level1[i][0] >= mostSteps) {
-      PVector location = path.getLocation(level1[i][0]);
-      if (dist(rectX, rectY, location.x, location.y) <= range) {
-        index = i;
-        mostSteps = level1[i][0];
-      }
-    }
-  }
-  boolean targetFound = false;
-  if (index != -1) {
-    lastTarget = level1[index][0];
-    targetFound = true;
-  }
+  //float range = 200;
+  //// Finds balloon that has travelled the most that is within this range
+  //int index = -1;
+  //float mostSteps = 0;
+  //for(int i = 0; i < level1.length; i++) {
+  //  if (level1[i][0] >= mostSteps) {
+  //    PVector location = path.getLocation(level1[i][0]);
+  //    if (dist(rectX, rectY, location.x, location.y) <= range) {
+  //      index = i;
+  //      mostSteps = level1[i][0];
+  //    }
+  //  }
+  //}
+  //boolean targetFound = false;
+  //if (index != -1) {
+  //  lastTarget = level1[index][0];
+  //  targetFound = true;
+  //}
   
-  rotateBuilding(lastTarget, targetFound);
+  //rotateBuilding(lastTarget, targetFound);
   popMatrix();
   
-  for(Projectile p: projectiles) p.draw();
-  int iterator = 0;
+  //for(Projectile p: projectiles) p.draw();
+  //int iterator = 0;
   
-  while (iterator < projectiles.size()) {
-    if(projectiles.get(iterator).outOfBounds()) {
-      projectiles.remove(iterator);
-    } else iterator++;
-  }
+  //while (iterator < projectiles.size()) {
+  //  if(projectiles.get(iterator).outOfBounds()) {
+  //    projectiles.remove(iterator);
+  //  } else iterator++;
+  //}
  
 }
