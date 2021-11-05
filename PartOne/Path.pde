@@ -4,7 +4,7 @@ Encompasses: The Path for Balloons, Balloon Movement
 
 // ------- CODE FOR THE PATH 
 ArrayList<PVector> points = new ArrayList<>(); // The points on the path, in order. 
-final float PATH_RADIUS = 15;
+final float PATH_RADIUS = 5;
 void addPointToPath(float x, float y) {
     points.add(new PVector(x, y)); 
 }

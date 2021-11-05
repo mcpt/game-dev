@@ -7,7 +7,7 @@ int x, y, difX, difY, count;
 List<PVector> towers; // Towers that are placed down
 boolean held; // If the mouse is being held down
 boolean within; // If mouse was held down during the previous frame
-
+final int towerSize = 25;
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
@@ -29,10 +29,12 @@ void initDragAndDrop() {
   towers = new ArrayList();
 }
 
-
+boolean pointRectCollision(float x1, float y1, float x2, float y2, float size) {
+  return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) <= size * size;
+}
 // Check to see if mouse pointer is within the boundaries of the tower
 boolean withinBounds() {
-  return (mouseX - x) * (mouseX - x) + (mouseY - y) * (mouseY - y) <= 13 * 13;
+  return pointRectCollision(mouseX, mouseY, x, y, towerSize);
 }
 
 
@@ -70,7 +72,7 @@ void drawTowerIcon(float xPos, float yPos, color colour) {
   stroke(0);
   fill(colour);
   rectMode(CENTER);
-  rect(xPos, yPos, 25, 25); // Draw a simple rectangle as the tower
+  rect(xPos, yPos, towerSize, towerSize); // Draw a simple rectangle as the tower
 }
 // Draws a tower that rotates to face the targetLocation
 void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation) {
@@ -92,7 +94,7 @@ void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation)
   strokeWeight(0);
   fill(colour);
   rectMode(CENTER);
-  rect(0, 0, 25, 25); // Draw a simple rectangle as the tower
+  rect(0, 0, towerSize, towerSize); // Draw a simple rectangle as the tower
   
   popMatrix();
 }
@@ -147,5 +149,10 @@ float shortestDist(PVector point) {
 
 // Will return if a drop is legal by looking at the shortance distance between the rectangle center and the path.
 boolean legalDrop() {
+  // checking if this tower overlaps any of the already placed towers
+  for (int i = 0; i < towers.size(); i++) {
+    PVector towerLocation = towers.get(i);
+    if (pointRectCollision(x, y, towerLocation.x, towerLocation.y, towerSize)) return false;
+  }
   return shortestDist(new PVector(x, y)) > PATH_RADIUS;
 }
