@@ -8,6 +8,7 @@ List<PVector> towers; // Towers that are placed down
 boolean held; // If the mouse is being held down
 boolean within; // If mouse was held down during the previous frame
 final int towerSize = 25;
+final color towerColour = #7b9d32;
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
@@ -20,10 +21,10 @@ void initDragAndDrop() {
   difX = 0;
   difY = 0;
   
-  trashX1 = 700;
-  trashY1 = 130;
-  trashX2 = 750;
-  trashY2 = 180;
+  trashX1 = 525;
+  trashY1 = 30;
+  trashX2 = 775;
+  trashY2 = 120;
   
   count = 0;
   towers = new ArrayList();
@@ -77,7 +78,7 @@ void drawTowerIcon(float xPos, float yPos, color colour) {
 // Draws a tower that rotates to face the targetLocation
 void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation) {
   strokeWeight(5);
-  stroke(150);
+  stroke(#4C6710);
   
   line(xPos, yPos, targetLocation.x, targetLocation.y);
   pushMatrix();
@@ -101,28 +102,29 @@ void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation)
 void drawAllTowers() {
   for (int i = 0; i < towers.size(); i++) {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
-    drawTowerIcon(xPos, yPos, 255, new PVector(mouseX, mouseY)); // Towers will track the mouse as a placeholder
+    drawTowerIcon(xPos, yPos, towerColour, new PVector(mouseX, mouseY)); // Towers will track the mouse as a placeholder
+    fill(#4C6710);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }
 }
 
 void drawTrash() {
   rectMode(CORNERS);
-  strokeWeight(0);
-  fill(89, 232, 0);
-  stroke(89, 232, 0);
+  noStroke();
+  fill(#4C6710);
   rect(trashX1, trashY1, trashX2, trashY2);
   fill(255, 255, 255);
   stroke(255, 255, 255);
 }
 
 void dragAndDropInstructions() {
+  fill(#4C6710);
+  textSize(12);
   
-  stroke(255);
   text("Pick up tower from here!", 620, 20);
-  text("Brown areas are places where you can't place down towers!", 200, 20);
-  text("Place a tower into the green area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + held + "\nWithin object bounds: " + within, 50, 50);
+  text("You can't place towers on the path of the balloons!", 200, 20);
+  text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + held + "\nWithin object bounds: " + within, 15, 20);
 }
 
 

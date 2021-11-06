@@ -16,7 +16,7 @@ void setup() {
 
 
 void draw() {
-  background(100);    
+  background(#add558);    
   drawPath();
   
   drawAllTowers(); // Draw all the towers that have been placed down before
@@ -27,10 +27,10 @@ void draw() {
   if (!legalDrop()) {
     drawTowerIcon(x, y, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
   } else {
-    drawTowerIcon(x, y, 255); // Draw the current tower (that the user is holding)
+    drawTowerIcon(x, y, towerColour); // Draw the current tower (that the user is holding)
   }
   
-  drawTowerIcon(650, 50, 255); // Draw the pick-up tower on the top right
+  drawTowerIcon(650, 50, towerColour); // Draw the pick-up tower on the top right
   drawHealthBar();
   dragAndDropInstructions();
   // Check to see if the mouse was released

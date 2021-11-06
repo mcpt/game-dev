@@ -32,7 +32,7 @@ void updatePositions(float[] balloon) {
     ellipseMode(CENTER);
     strokeWeight(0);
     stroke(0);
-    fill(255);
+    fill(#f3cd64);
     ellipse(position.x, position.y,RADIUS,RADIUS);
   } else {
     balloon[delay]--;
