@@ -4,7 +4,7 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 // -------- CODE FOR DRAG & DROP ----------------------
 
 int x, y, difX, difY, count;
-List<PVector> towers; // Towers that are placed down
+ArrayList<PVector> towers; // Towers that are placed down
 boolean held; // If the mouse is being held down
 boolean within; // If mouse was held down during the previous frame
 final int towerSize = 25;
