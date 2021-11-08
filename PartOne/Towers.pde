@@ -30,8 +30,10 @@ void initDragAndDrop() {
   towers = new ArrayList();
 }
 
+// Use point to rectangle collision detection to check for mouse being within bounds of pick-up box
 boolean pointRectCollision(float x1, float y1, float x2, float y2, float size) {
-  return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) <= size * size;
+  //            --X Distance--               --Y Distance--
+  return (abs(x2 - x1) <= size / 2) && (abs(y2 - y1) <= size / 2);
 }
 // Check to see if mouse pointer is within the boundaries of the tower
 boolean withinBounds() {
