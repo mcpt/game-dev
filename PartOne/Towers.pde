@@ -12,6 +12,22 @@ final color towerColour = #7b9d32;
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
+int framesElapsed = 0;
+ArrayList<Projectile> projectiles = new ArrayList<>();
+
+void handleProjectiles() {
+  framesElapsed++;
+  for(PVector tower: towers) {
+    if (framesElapsed % 20 == 0) {
+      PVector toMouse = new PVector(mouseX - tower.x, mouseY - tower.y); 
+      PVector unitVector = PVector.div(toMouse, toMouse.mag());
+      projectiles.add(new Projectile(tower, unitVector.mult(5))); 
+    }
+  }
+  for(Projectile projectile: projectiles) {
+    projectile.draw();
+  }
+}
 void initDragAndDrop() {
     
   x = 650; y = 50;

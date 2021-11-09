@@ -21,7 +21,7 @@ void draw() {
   
   drawAllTowers(); // Draw all the towers that have been placed down before
   drawBalloons();
-  
+  handleProjectiles();
   drawTrash();
   //changing the color if it is an illegal drop to red
   if (!legalDrop()) {

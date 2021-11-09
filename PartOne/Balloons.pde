@@ -3,20 +3,20 @@ Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End
 */
 
 ArrayList<float[]> balloons = new ArrayList<>();
-final int distanceTravelled = 0, delay = 1, speed = 2;
+final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3;
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed}
-  balloons.add(new float[]{0, 100, 3});
-  balloons.add(new float[]{0, 130, 3});
-  balloons.add(new float[]{0, 160, 2});
-  balloons.add(new float[]{0, 220, 4});
-  balloons.add(new float[]{0, 340, 2});
-  balloons.add(new float[]{0, 370, 2});
-  balloons.add(new float[]{0, 400, 5});
-  balloons.add(new float[]{0, 430, 5});
-  balloons.add(new float[]{0, 490, 3});
-  balloons.add(new float[]{0, 520, 1});
-  balloons.add(new float[]{0, 550, 3});
+  balloons.add(new float[]{0, 100, 3, 50});
+  balloons.add(new float[]{0, 130, 3, 50});
+  balloons.add(new float[]{0, 160, 2, 50});
+  balloons.add(new float[]{0, 220, 4, 50});
+  balloons.add(new float[]{0, 340, 2, 50});
+  balloons.add(new float[]{0, 370, 2, 50});
+  balloons.add(new float[]{0, 400, 5, 50});
+  balloons.add(new float[]{0, 430, 5, 50});
+  balloons.add(new float[]{0, 490, 3, 50});
+  balloons.add(new float[]{0, 520, 1, 50});
+  balloons.add(new float[]{0, 550, 3, 50});
 }
 
 // Displays and moves balloons
@@ -32,8 +32,15 @@ void updatePositions(float[] balloon) {
     ellipseMode(CENTER);
     strokeWeight(0);
     stroke(0);
+    fill(0);
+    text(balloon[hp], position.x - 19, position.y - 20);
     fill(#f3cd64);
     ellipse(position.x, position.y,RADIUS,RADIUS);
+    for(Projectile p: projectiles) {
+      if(p.dist(position) <= RADIUS / 2) {
+        balloon[hp]--;
+      }
+    }
   } else {
     balloon[delay]--;
   }
