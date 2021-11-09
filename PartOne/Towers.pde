@@ -1,6 +1,6 @@
 /*
 Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers, Tower Validity Checking
-*/
+ */
 // -------- CODE FOR DRAG & DROP ----------------------
 
 int x, y, difX, difY, count;
@@ -13,18 +13,19 @@ final color towerColour = #7b9d32;
 int trashX1, trashY1, trashX2, trashY2;
 
 void initDragAndDrop() {
-    
-  x = 650; y = 50;
-  
+
+  x = 650;
+  y = 50;
+
   within = false;
   difX = 0;
   difY = 0;
-  
+
   trashX1 = 525;
   trashY1 = 30;
   trashX2 = 775;
   trashY2 = 120;
-  
+
   count = 0;
   towers = new ArrayList();
 }
@@ -43,7 +44,7 @@ boolean withinBounds() {
 //check if you drop in trash
 boolean trashDrop() {
   if (x >= trashX1 && x <= trashX2 && y >= trashY1 && y <= trashY2) {
-     return true;
+    return true;
   }
   return false;
 }
@@ -52,14 +53,16 @@ boolean trashDrop() {
 void handleDrop() { // Will be called whenever a tower is placed down
   // Instructions to check for valid drop area will go here
   if (trashDrop()) {
-    x = 650; y = 50;
+    x = 650;
+    y = 50;
     println("Dropped object in trash.");
   } else if (legalDrop()) {
     towers.add(new PVector(x, y));
-   // Add the tower to the list of placed down towers
-    x = 650; y = 50;
+    // Add the tower to the list of placed down towers
+    x = 650;
+    y = 50;
     println("Dropped for the " + (++count) + "th time.");
-  }  
+  }
 }
 
 // Will be called whenever a tower is picked up
@@ -80,24 +83,24 @@ void drawTowerIcon(float xPos, float yPos, color colour) {
 void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation) {
   strokeWeight(5);
   stroke(#4C6710);
-  
+
   line(xPos, yPos, targetLocation.x, targetLocation.y);
   pushMatrix();
   translate(xPos, yPos);
-  
-    // Angle calculation
- 
+
+  // Angle calculation
+
   float slope = (targetLocation.y - yPos) / (targetLocation.x - xPos);
   float angle = atan(slope);
 
-  
+
   rotate(angle);
-  
+
   strokeWeight(0);
   fill(colour);
   rectMode(CENTER);
   rect(0, 0, towerSize, towerSize); // Draw a simple rectangle as the tower
-  
+
   popMatrix();
 }
 void drawAllTowers() {
@@ -116,7 +119,7 @@ void drawSelectedTowers() {
   } else {
     drawTowerIcon(x, y, towerColour); // Draw the current tower (that the user is holding)
   }
-  
+
   drawTowerIcon(650, 50, towerColour); // Draw the pick-up tower on the top right
 }
 
@@ -132,7 +135,7 @@ void drawTrash() {
 void dragAndDropInstructions() {
   fill(#4C6710);
   textSize(12);
-  
+
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
@@ -142,11 +145,11 @@ void dragAndDropInstructions() {
 
 // -------- CODE FOR PATH COLLISION DETECTION ---------
 float pointDistToLine(PVector start, PVector end, PVector point) {
-  // Code from https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment 
+  // Code from https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
   float l2 = (start.x - end.x) * (start.x - end.x) + (start.y - end.y) * (start.y - end.y);  // i.e. |w-v|^2 -  avoid a sqrt
   if (l2 == 0.0) return dist(end.x, end.y, point.x, point.y);   // v == w case
-  float t = max(0, min(1, PVector.sub(point,start).dot(PVector.sub(end,start)) / l2));
-  PVector projection = PVector.add(start, PVector.mult(PVector.sub(end,start),t));  // Projection falls on the segment
+  float t = max(0, min(1, PVector.sub(point, start).dot(PVector.sub(end, start)) / l2));
+  PVector projection = PVector.add(start, PVector.mult(PVector.sub(end, start), t));  // Projection falls on the segment
   return dist(point.x, point.y, projection.x, projection.y);
 }
 

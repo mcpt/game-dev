@@ -5,8 +5,6 @@ import java.util.List;
 
 // Program main method
 void setup() {
-  rectMode(CENTER);
-  ellipseMode(CENTER);
   size(800, 500);
   loadHeartIcon();
   initDragAndDrop();
@@ -14,16 +12,15 @@ void setup() {
   createFirstWave();
 }
 
-
 void draw() {
-  background(#add558);    
+  background(#add558);
   drawPath();
-  
+
   drawAllTowers(); // Draw all the towers that have been placed down before
   drawTrash();
-  drawSelectedTowers(); 
+  drawSelectedTowers();
   dragAndDropInstructions();
-  
+
   drawBalloons();
   drawHealthBar();
 }
@@ -40,7 +37,7 @@ void mouseDragged() {
 // Whenever the user initially presses down on the mouse
 void mousePressed() {
   within = withinBounds(); // Check to see if the pointer is within the bounds of the tower
-  
+
   if (within) {
     handlePickUp(); // The tower has been "picked up"
     difX = x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
@@ -48,6 +45,7 @@ void mousePressed() {
   }
 }
 
+// Whenever the user releases their mouse
 void mouseReleased() {
   if (within) { // If the user was holding the tower in the previous frame, the tower has just been dropped
     handleDrop(); // Call the method to handle the drop and check for drop validity

@@ -1,12 +1,12 @@
 /*
 Encompasses: The Path for Balloons, Balloon Movement
-*/
+ */
 
-// ------- CODE FOR THE PATH 
-ArrayList<PVector> points = new ArrayList<>(); // The points on the path, in order. 
+// ------- CODE FOR THE PATH
+ArrayList<PVector> points = new ArrayList<>(); // The points on the path, in order.
 final float PATH_RADIUS = 20;
 void addPointToPath(float x, float y) {
-    points.add(new PVector(x, y)); 
+  points.add(new PVector(x, y));
 }
 
 void initPath() {
@@ -37,7 +37,7 @@ void drawPath() {
     PVector nextPoint = points.get(i + 1);
     line(currentPoint.x, currentPoint.y, nextPoint.x, nextPoint.y);
   }
-  
+
   stroke(#7b9d32);
   strokeWeight(PATH_RADIUS * 2);
   for (int i = 0; i < points.size() - 1; i++) {
@@ -48,7 +48,7 @@ void drawPath() {
 }
 
 // GIVEN TO PARTICIPANTS BY DEFAULT
-PVector getLocation(float travelDistance) 
+PVector getLocation(float travelDistance)
 {
   for (int i = 0; i < points.size() - 1; i++) {
     PVector currentPoint = points.get(i);
