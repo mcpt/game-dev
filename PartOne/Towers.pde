@@ -5,7 +5,7 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 
 int x, y, difX, difY, count;
 ArrayList<PVector> towers; // Towers that are placed down
-boolean held; // If the mouse is being held down
+
 boolean within; // If mouse was held down during the previous frame
 final int towerSize = 25;
 final color towerColour = #7b9d32;
@@ -16,7 +16,6 @@ void initDragAndDrop() {
     
   x = 650; y = 50;
   
-  held = false;
   within = false;
   difX = 0;
   difY = 0;
@@ -109,6 +108,17 @@ void drawAllTowers() {
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }
 }
+void drawSelectedTowers() {
+  // Draws the tower in the top right and the tower you drag
+  // Changing the color if it is an illegal drop to red
+  if (!legalDrop()) {
+    drawTowerIcon(x, y, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
+  } else {
+    drawTowerIcon(x, y, towerColour); // Draw the current tower (that the user is holding)
+  }
+  
+  drawTowerIcon(650, 50, towerColour); // Draw the pick-up tower on the top right
+}
 
 void drawTrash() {
   rectMode(CORNERS);
@@ -126,7 +136,7 @@ void dragAndDropInstructions() {
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + held + "\nWithin object bounds: " + within, 15, 20);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nWithin object bounds: " + within, 15, 20);
 }
 
 
