@@ -74,7 +74,7 @@ boolean atEndOfPath(float travelDistance) {
     boolean[] offscreen: this array tracks if the balloon has been subtracted from health once it is off the screen.
     PImage heart: the heart icon to display with the healthbar.
 */
-int health = 12;  //variable to track user's health
+int health = 10;  //variable to track user's health
 PImage heart;
 
 void loadHeartIcon() {
