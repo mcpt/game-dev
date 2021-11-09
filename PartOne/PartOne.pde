@@ -49,9 +49,9 @@ void mousePressed() {
 }
 
 void mouseReleased() {
-  if (within) { // If the mouse was held down in the previous frame, the object has just been dropped
-    handleDrop(); // Call the method to handle the drop
+  if (within) { // If the user was holding the tower in the previous frame, the tower has just been dropped
+    handleDrop(); // Call the method to handle the drop and check for drop validity
   }
 
-  within = false;
+  within = false; // The mouse is no longer holding the tower
 }

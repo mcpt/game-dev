@@ -68,7 +68,7 @@ void handlePickUp() {
 }
 // --------------------------------------------------
 
-// Draw a default tower
+// Draw a simple tower at a specified location
 void drawTowerIcon(float xPos, float yPos, color colour) {
   strokeWeight(0);
   stroke(0);
