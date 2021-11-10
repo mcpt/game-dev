@@ -1,8 +1,8 @@
 /*
 Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End of Path
  */
-
-ArrayList<float[]> balloons = new ArrayList<>();
+ 
+ArrayList<float[]> balloons = new ArrayList<float[]>();
 final int distanceTravelled = 0, delay = 1, speed = 2;
 
 void createFirstWave() {
@@ -75,7 +75,7 @@ boolean atEndOfPath(float travelDistance) {
  boolean[] offscreen: this array tracks if the balloon has been subtracted from health once it is off the screen.
  PImage heart: the heart icon to display with the healthbar.
  */
-int health = 10;  //variable to track user's health
+int health = 11;  //variable to track user's health
 PImage heart;
 
 void loadHeartIcon() {
@@ -87,7 +87,7 @@ void drawHealthBar() {
   stroke(0, 0, 0);
   strokeWeight(0);
   fill(#830000);
-  rect(715, 455, 120, 20);
+  rect(721, 455, 132, 20);
 
   //draw healthbar
   noStroke();

@@ -27,7 +27,7 @@ void initDragAndDrop() {
   trashY2 = 120;
 
   count = 0;
-  towers = new ArrayList();
+  towers = new ArrayList<PVector>();
 }
 
 // Use point to rectangle collision detection to check for mouse being within bounds of pick-up box
