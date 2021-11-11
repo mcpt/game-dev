@@ -1,5 +1,5 @@
 /*
-Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End of Path
+Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End of Path, Health Bar
  */
  
 ArrayList<float[]> balloons = new ArrayList<float[]>();
@@ -71,8 +71,7 @@ boolean atEndOfPath(float travelDistance) {
 /*
   Heath-related variables:
  int health: The player's total health.
- This number decreases if balloons pass the end of the path (offscreen), currentely 12 since there are 12 balloons.
- boolean[] offscreen: this array tracks if the balloon has been subtracted from health once it is off the screen.
+ This number decreases if balloons pass the end of the path (offscreen), currentely 11 since there are 11 balloons.
  PImage heart: the heart icon to display with the healthbar.
  */
 int health = 11;  //variable to track user's health
