@@ -80,7 +80,7 @@ PImage heart;
 void loadHeartIcon() {
   heart = loadImage("heart.png");
 }
-//method to draw a healthbar at the top right of the screen
+//method to draw a healthbar at the bottom right of the screen
 void drawHealthBar() {
   //draw healthbar outline
   stroke(0, 0, 0);
