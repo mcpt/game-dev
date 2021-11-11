@@ -80,7 +80,7 @@ void drawTowerIcon(float xPos, float yPos, color colour) {
   rect(xPos, yPos, towerSize, towerSize); // Draw a simple rectangle as the tower
 }
 // Draws a tower that rotates to face the targetLocation
-void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation) {
+void drawTowerWithRotation(float xPos, float yPos, color colour, PVector targetLocation) {
   strokeWeight(5);
   stroke(#4C6710);
 
@@ -106,7 +106,7 @@ void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation)
 void drawAllTowers() {
   for (int i = 0; i < towers.size(); i++) {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
-    drawTowerIcon(xPos, yPos, towerColour, new PVector(mouseX, mouseY)); // Towers will track the mouse as a placeholder
+    drawTowerWithRotation(xPos, yPos, towerColour, new PVector(mouseX, mouseY)); // Towers will track the mouse as a placeholder
     fill(#4C6710);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }
