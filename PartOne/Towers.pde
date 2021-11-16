@@ -15,18 +15,38 @@ int trashX1, trashY1, trashX2, trashY2;
 int framesElapsed = 0;
 ArrayList<Projectile> projectiles = new ArrayList<>();
 
+PVector furthestBalloon() {
+  float maxDist = 0;
+  PVector location = null;
+  for(float[] balloon: balloons) {
+     if(balloon[distanceTravelled] > maxDist) {
+       location = getLocation(balloon[distanceTravelled]);
+       maxDist = balloon[distanceTravelled];
+     }
+  }
+  return location;
+}
+
 void handleProjectiles() {
   framesElapsed++;
   for(PVector tower: towers) {
     if (framesElapsed % 20 == 0) {
-      PVector toMouse = new PVector(mouseX - tower.x, mouseY - tower.y); 
+      PVector balloon = furthestBalloon();
+      if(balloon == null) return;
+      PVector toMouse = new PVector(balloon.x - tower.x, balloon.y - tower.y); 
       PVector unitVector = PVector.div(toMouse, toMouse.mag());
-      projectiles.add(new Projectile(tower, unitVector.mult(5))); 
+      projectiles.add(new Projectile(tower, unitVector.mult(12))); 
     }
   }
-  for(Projectile projectile: projectiles) {
-    projectile.draw();
+  for(int i = 0; i < projectiles.size(); i++) {
+    Projectile p = projectiles.get(i);
+    p.draw();
+    if (p.offScreen()) {
+      projectiles.remove(i);
+      i--;
+    }
   }
+  print(projectiles.size());
 }
 void initDragAndDrop() {
     
@@ -118,7 +138,9 @@ void drawTowerIcon(float xPos, float yPos, color colour, PVector targetLocation)
 void drawAllTowers() {
   for (int i = 0; i < towers.size(); i++) {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
-    drawTowerIcon(xPos, yPos, towerColour, new PVector(mouseX, mouseY)); // Towers will track the mouse as a placeholder
+    PVector track = furthestBalloon();
+    if (track == null) drawTowerIcon(xPos, yPos, towerColour);
+    else drawTowerIcon(xPos, yPos, towerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
     fill(#4C6710);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }

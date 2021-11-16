@@ -50,7 +50,11 @@ void drawBalloons() {
   for(int i = 0; i < balloons.size(); i++) {
     float[] balloon = balloons.get(i);
     updatePositions(balloon);
-     
+    if (balloon[hp] <= 0) {
+      balloons.remove(i);
+      i--;
+      continue;
+    }
     if (atEndOfPath(balloon[distanceTravelled])) {
       balloons.remove(i); // Removing the balloon from the list
       health--; // Lost a life.
