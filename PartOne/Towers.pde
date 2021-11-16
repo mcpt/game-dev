@@ -30,23 +30,22 @@ PVector furthestBalloon() {
 void handleProjectiles() {
   framesElapsed++;
   for(PVector tower: towers) {
-    if (framesElapsed % 20 == 0) {
+    if (framesElapsed % 5 == 0) {
       PVector balloon = furthestBalloon();
       if(balloon == null) return;
       PVector toMouse = new PVector(balloon.x - tower.x, balloon.y - tower.y); 
       PVector unitVector = PVector.div(toMouse, toMouse.mag());
-      projectiles.add(new Projectile(tower, unitVector.mult(12))); 
+      projectiles.add(new Projectile(tower, unitVector.mult(12), 0.25, 2)); 
     }
   }
   for(int i = 0; i < projectiles.size(); i++) {
     Projectile p = projectiles.get(i);
     p.draw();
-    if (p.offScreen()) {
+    if (p.dead()) {
       projectiles.remove(i);
       i--;
     }
   }
-  print(projectiles.size());
 }
 void initDragAndDrop() {
 

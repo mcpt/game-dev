@@ -4,6 +4,8 @@ Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End
 
 ArrayList<float[]> balloons = new ArrayList<>();
 final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3;
+final int balloonRadius = 25; //Radius of the balloon
+
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed}
   balloons.add(new float[]{0, 100, 3, 50});
@@ -23,7 +25,6 @@ void createFirstWave() {
 void updatePositions(float[] balloon) {
   // Only when balloonProps[1] is 0 (the delay) will the balloons start moving.
   if (balloon[delay] == 0) {
-    final int RADIUS = 25; //Radius of the balloon
 
     PVector position = getLocation(balloon[distanceTravelled]);
     balloon[distanceTravelled] += balloon[speed]; //Increases the balloon's total steps by the speed
@@ -33,14 +34,30 @@ void updatePositions(float[] balloon) {
     strokeWeight(0);
     stroke(0);
     fill(0);
-    text(balloon[hp], position.x - 19, position.y - 20);
+    
+    //draw healthbar outline
+    stroke(0, 0, 0);
+    strokeWeight(0);
+    rectMode(CORNER);
+    fill(#830000);
+    final float hbLength = 35, hbWidth = 6;
+    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength, hbWidth);
+    //draw mini healthbar
+    noStroke();
+    fill(#FF3131);
+    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / 50), hbWidth); //the healthbar that changes based on hp
+ 
+    noFill();
+  
+    //write text
+    stroke(0, 0, 0);
+    textSize(14);
+    fill(255, 255, 255);
+    text("Health:   "+health, 670, 462);
+    
     fill(#f3cd64);
-    ellipse(position.x, position.y, RADIUS, RADIUS);
-    for(Projectile p: projectiles) {
-      if(p.dist(position) <= RADIUS / 2) {
-        balloon[hp]--;
-      }
-    }
+    ellipse(position.x, position.y, balloonRadius, balloonRadius);
+
   } else {
     balloon[delay]--;
   }
@@ -96,6 +113,7 @@ void drawHealthBar() {
   stroke(0, 0, 0);
   strokeWeight(0);
   fill(#830000);
+  rectMode(CENTER);
   rect(721, 455, 132, 20);
 
   //draw healthbar
