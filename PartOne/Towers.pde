@@ -144,7 +144,7 @@ void drawAllTowers() {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
     PVector track = furthestBalloon();
     if (track == null) drawTowerIcon(xPos, yPos, towerColour);
-    else drawTowerIcon(xPos, yPos, towerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
+    else drawTowerWithRotation(xPos, yPos, towerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
     fill(#4C6710);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }
