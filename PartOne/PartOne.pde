@@ -17,6 +17,7 @@ void draw() {
   drawPath();
 
   drawAllTowers(); // Draw all the towers that have been placed down before
+  handleProjectiles();
   drawTrash();
   drawSelectedTowers();
   dragAndDropInstructions();
