@@ -47,9 +47,15 @@ void drawPath() {
   }
 }
 
+HashMap<Float, PVector> dp = new HashMap<Float, PVector>();
 // GIVEN TO PARTICIPANTS BY DEFAULT
 PVector getLocation(float travelDistance)
 {
+  PVector memoized = dp.get(travelDistance);
+  if(memoized != null) {
+    return memoized;
+  }
+  float originalDist = travelDistance;
   for (int i = 0; i < points.size() - 1; i++) {
     PVector currentPoint = points.get(i);
     PVector nextPoint = points.get(i + 1);
@@ -63,9 +69,11 @@ PVector getLocation(float travelDistance)
       float yDist = nextPoint.y - currentPoint.y;
       float x = currentPoint.x + xDist * travelProgress;
       float y = currentPoint.y + yDist * travelProgress;
+      dp.put(originalDist, new PVector(x, y));
       return new PVector(x, y);
     }
   }
   // At end of path
+  dp.put(originalDist, points.get(points.size() - 1));
   return points.get(points.size() - 1);
 }
