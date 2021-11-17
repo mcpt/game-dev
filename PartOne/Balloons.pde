@@ -8,17 +8,20 @@ final int balloonRadius = 25; //Radius of the balloon
 
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed}
-  balloons.add(new float[]{0, 100, 3, 50});
-  balloons.add(new float[]{0, 130, 3, 50});
-  balloons.add(new float[]{0, 160, 2, 50});
-  balloons.add(new float[]{0, 220, 4, 50});
-  balloons.add(new float[]{0, 340, 2, 50});
-  balloons.add(new float[]{0, 370, 2, 50});
-  balloons.add(new float[]{0, 400, 5, 50});
-  balloons.add(new float[]{0, 430, 5, 50});
-  balloons.add(new float[]{0, 490, 3, 50});
-  balloons.add(new float[]{0, 520, 1, 50});
-  balloons.add(new float[]{0, 550, 3, 50});
+  for(int i = 0; i <= 200; i++) {
+    balloons.add(new float[]{0, i * 5 + 100, random(2, 5), 50});
+  }
+  //balloons.add(new float[]{0, 100, 3, 50});
+  //balloons.add(new float[]{0, 130, 3, 50});
+  //balloons.add(new float[]{0, 160, 2, 50});
+  //balloons.add(new float[]{0, 220, 4, 50});
+  //balloons.add(new float[]{0, 340, 2, 50});
+  //balloons.add(new float[]{0, 370, 2, 50});
+  //balloons.add(new float[]{0, 400, 5, 50});
+  //balloons.add(new float[]{0, 430, 5, 50});
+  //balloons.add(new float[]{0, 490, 3, 50});
+  //balloons.add(new float[]{0, 520, 1, 50});
+  //balloons.add(new float[]{0, 550, 3, 50});
 }
 
 // Displays and moves balloons

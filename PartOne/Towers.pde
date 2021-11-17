@@ -35,7 +35,7 @@ void handleProjectiles() {
       if(balloon == null) return;
       PVector toMouse = new PVector(balloon.x - tower.x, balloon.y - tower.y); 
       PVector unitVector = PVector.div(toMouse, toMouse.mag());
-      projectiles.add(new Projectile(tower, unitVector.mult(12), 0.25, 2)); 
+      projectiles.add(new Projectile(tower, unitVector.mult(12), 5, 2)); 
     }
   }
   for(int i = 0; i < projectiles.size(); i++) {
