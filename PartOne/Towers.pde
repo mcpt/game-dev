@@ -5,6 +5,7 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 
 int x, y, difX, difY, count;
 ArrayList<PVector> towers; // Towers that are placed down
+ArrayList<int[]> towerData;
 
 boolean within; // If mouse was held down during the previous frame
 final int towerSize = 25;
@@ -12,7 +13,6 @@ final color towerColour = #7b9d32;
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
-int framesElapsed = 0;
 ArrayList<Projectile> projectiles = new ArrayList<>();
 
 PVector furthestBalloon() {
@@ -27,26 +27,24 @@ PVector furthestBalloon() {
   return location;
 }
 
-void handleProjectiles() {
-  framesElapsed++;
-  for(PVector tower: towers) {
-    if (framesElapsed % 5 == 0) {
-      PVector balloon = furthestBalloon();
-      if(balloon == null) return;
-      PVector toMouse = new PVector(balloon.x - tower.x, balloon.y - tower.y); 
-      PVector unitVector = PVector.div(toMouse, toMouse.mag());
-      projectiles.add(new Projectile(tower, unitVector.mult(12), 5, 2)); 
-    }
-  }
-  for(int i = 0; i < projectiles.size(); i++) {
-    Projectile p = projectiles.get(i);
-    p.draw();
-    if (p.dead()) {
-      projectiles.remove(i);
-      i--;
-    }
+int[] makeTowerData() {
+  // TO IMPLEMENT
+  // Filler
+  if (random(0, 1) <= 0.5) {
+    return new int[] {
+      10, // Cooldown between next projectile
+      10, // Max cooldown
+      0 // Projectile ID
+    };
+  } else {
+    return new int[] {
+      25, // Cooldown between next projectile
+      25, // Max cooldown
+      1 // Projectile ID
+    };
   }
 }
+
 void initDragAndDrop() {
 
   x = 650;
@@ -63,6 +61,7 @@ void initDragAndDrop() {
 
   count = 0;
   towers = new ArrayList<PVector>();
+  towerData = new ArrayList<int[]>();
 }
 
 // Use point to rectangle collision detection to check for mouse being within bounds of pick-up box
@@ -93,6 +92,7 @@ void handleDrop() { // Will be called whenever a tower is placed down
     println("Dropped object in trash.");
   } else if (legalDrop()) {
     towers.add(new PVector(x, y));
+    towerData.add(makeTowerData());
     // Add the tower to the list of placed down towers
     x = 650;
     y = 50;
