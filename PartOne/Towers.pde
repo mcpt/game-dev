@@ -10,10 +10,11 @@ ArrayList<int[]> towerData;
 boolean within; // If mouse was held down during the previous frame
 final int towerSize = 25;
 final color towerColour = #7b9d32;
+final color towerErrorColour = #E30707; // Colour to display when user purchases tower without sufficient funds
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
-ArrayList<Projectile> projectiles = new ArrayList<>();
+ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 PVector furthestBalloon() {
   float maxDist = 0;
@@ -89,20 +90,33 @@ void handleDrop() { // Will be called whenever a tower is placed down
   if (trashDrop()) {
     x = 650;
     y = 50;
-    println("Dropped object in trash.");
   } else if (legalDrop()) {
     towers.add(new PVector(x, y));
-    towerData.add(makeTowerData());
-    // Add the tower to the list of placed down towers
-    x = 650;
+    towerData.add(makeTowerData()); // Add the tower to the list of placed down towers
+    
+    // Use funds to purchase the tower (we have already checked for sufficient funds during tower pick-up)
+    purchaseTower(towerPrice); 
+    
+    // Move the tower position back to the pick-up location
+    x = 650; 
     y = 50;
-    println("Dropped for the " + (++count) + "th time.");
   }
 }
 
 // Will be called whenever a tower is picked up
 void handlePickUp() {
-  println("Object picked up.");
+  within = withinBounds(); // Check to see if the pointer is within the bounds of the pick-up location
+  
+  // Check for valid pick up AND sufficient funds to purchase the tower
+  if (within && hasSufficientFunds(towerPrice)) {
+    
+    
+    difX = x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
+    difY = y - mouseY;
+  }
+  else {
+    within = false; // Do not allow user to pick up the tower
+  }
 }
 // --------------------------------------------------
 
@@ -156,8 +170,14 @@ void drawSelectedTowers() {
   } else {
     drawTowerIcon(x, y, towerColour); // Draw the current tower (that the user is holding)
   }
-
-  drawTowerIcon(650, 50, towerColour); // Draw the pick-up tower on the top right
+  
+  // Check to see if the user is attempting to purchase/pick up a tower but has insufficient funds
+  if (attemptingToPurchaseTowerWithoutFunds()) {
+    drawTowerIcon(650, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
+  }
+  else {
+    drawTowerIcon(650, 50, towerColour); // Draw the pick-up tower on the top right
+  }
 }
 
 void drawTrash() {
