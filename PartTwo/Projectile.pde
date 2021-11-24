@@ -5,10 +5,11 @@ public class Projectile {
   private float damage;
   private float maxDistTravelled;
   private float currDistTravelled = 0;
+  private String dmgType;
   
   private int pierce;
   private ArrayList<float[]> balloonsHit; // Checks via reference... (change this to be more suitable for the workshop? Maybe have each balloon have a specific ID instead?)
-  public Projectile(PVector centre, PVector velocity, float damage, int pierce, float maxDistTravelled) {
+  public Projectile(PVector centre, PVector velocity, float damage, int pierce, float maxDistTravelled, String dmgType) {
     balloonsHit = new ArrayList<float[]>();
     this.center = centre;
     this.velocity = velocity;
@@ -16,11 +17,16 @@ public class Projectile {
     this.damage = damage;
     this.pierce = pierce;
     this.maxDistTravelled = maxDistTravelled;
+    this.dmgType = dmgType;
   }
   public void hitBalloon(float[] balloon) {
     if (pierce == 0 || balloonsHit.contains(balloon)) return;
     pierce--;
     balloon[hp] -= damage;
+    if(dmgType.equals("slow") && balloon[slowed]==0){
+      balloon[speed] -=1; 
+      balloon[slowed]=1;
+    }
     balloonsHit.add(balloon);
   }
   public void collisionWithBalloons() {
@@ -79,7 +85,7 @@ void handleProjectiles() {
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);
-        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist);
+        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist,"default");
         projectiles.add(projectile);
         
         // Default type
@@ -91,16 +97,16 @@ void handleProjectiles() {
           PVector unitVector = PVector.div(toMouse, toMouse.mag());
           
           PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
-          Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist);
+          Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist,"default");
           projectiles.add(projectile);
         }
       } else if (data[projectileType] == 2) {
-        //glue gunner
-        final int speed = 8, damage = 2, pierce = 5, maxTravelDist = 300;
+        //glue gunner - slows balloons
+        final int speed = 12, damage = 1, pierce = 7, maxTravelDist = 100; //slow-ish speed, low damage, high pierce, low range
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);
-        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist);
+        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist,"slow");
         projectiles.add(projectile);
       }
     }
