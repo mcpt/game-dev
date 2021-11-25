@@ -7,9 +7,6 @@
 // Current amount of money owned by the player
 int currentBalance = 750; // Give the user $750 of starting balance
 final int rewardPerBalloon = 20; // Money earned by popping a balloon
-int towerPrice(String towerType) {
-  return towerPrices.get(towerType);
-}
 
 void handleBalloonPop() {
   // Reward the player for popping the balloon
@@ -42,8 +39,8 @@ void purchaseTower(int cost) {
 }
 
 // Checks to see if the user is attempting to purchase/pick up a tower but has insufficient funds
-boolean attemptingToPurchaseTowerWithoutFunds(String towerID) {
-  if (mousePressed && withinBounds(towerID) && !hasSufficientFunds(towerPrice(towerID))) {
+boolean attemptingToPurchaseTowerWithoutFunds(int towerID) {
+  if (mousePressed && withinBounds(towerID) && !hasSufficientFunds(towerPrice[towerID])) {
     return true;
   }
   else {
@@ -54,8 +51,14 @@ boolean attemptingToPurchaseTowerWithoutFunds(String towerID) {
 // Displays the user's current balance on the screen
 void drawBalanceDisplay() {
   // If the user is attempting to purchase a tower without funds, warn them with red display text
-  if (attemptingToPurchaseTowerWithoutFunds("default") || attemptingToPurchaseTowerWithoutFunds("eight") || attemptingToPurchaseTowerWithoutFunds("slow")) {
-    fill(towerErrorColour); // Red text
+  boolean error = false;
+  for (int i = 0; i < 3; i++) {
+    if (attemptingToPurchaseTowerWithoutFunds(i)) {
+      error = true;
+    }
+  }
+  if (error) {
+    fill(towerErrorColour);
   }
   else {
     fill(0); // Black text

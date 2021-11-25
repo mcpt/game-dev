@@ -9,7 +9,6 @@ void setup() {
   loadHeartIcon();
   initDragAndDrop();
   initPath();
-  initTowerPrices();
   createFirstWave();
 }
 
@@ -34,50 +33,22 @@ void draw() {
 
 // Whenever the user drags the mouse, update the x and y values of the tower
 void mouseDragged() {
-  if (withinDefault) { // Check to see if the user is currently dragging a tower
-    // Set the values while accounting for the offset
-    held = "default";
-    defaultX = mouseX + difX;
-    defaultY = mouseY + difY;
-  } else if (withinEight) {
-    held = "eight";
-    eightX = mouseX + difX;
-    eightY = mouseY + difY;
-  } else if (withinSlow) {
-    held = "slow";
-    slowX = mouseX + difX;
-    slowY = mouseY + difY;
+  if (held != notHeld) {
+    dragAndDropLocations[held] = new PVector(mouseX + difX, mouseY + difY);
   }
-    
 }
 
 // Whenever the user initially presses down on the mouse
 void mousePressed() {
-  if (withinBoundsDefault() && hasSufficientFunds(towerPrice("default"))) {
-    withinDefault = true;
-    handlePickUp(); // The tower has been "picked up"
-    difX = defaultX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
-    difY = defaultY - mouseY;
-  } else if (withinBoundsEight() && hasSufficientFunds(towerPrice("eight"))) {
-    withinEight = true;
-    handlePickUp(); // The tower has been "picked up"
-    difX = eightX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
-    difY = eightY - mouseY;
-  } else if (withinBoundsSlow() && hasSufficientFunds(towerPrice("slow"))) {
-    withinSlow = true;
-    handlePickUp();
-    difX = slowX - mouseX;
-    difY = slowY - mouseY;
+  for (int i = 0; i < towerCount; i++) {
+    handlePickUp(i);
   }
 }
 
 // Whenever the user releases their mouse
 void mouseReleased() {
-  if (withinBoundsDefault() || withinBoundsEight() || withinBoundsSlow()) { // If the user was holding the tower in the previous frame, the tower has just been dropped
-    handleDrop(); // Call the method to handle the drop and check for drop validity
+  if (held != notHeld) {
+    handleDrop();
   }
-
-  withinDefault = false; // The mouse is no longer holding the tower
-  withinEight = false;
-  withinSlow = false;
+  held = notHeld;
 }

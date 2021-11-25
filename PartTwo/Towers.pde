@@ -3,24 +3,23 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
  */
 // -------- CODE FOR DRAG & DROP ----------------------
 
-int defaultX, defaultY, eightX, eightY, slowX, slowY;
-String held = "default";
+int held = -1; // -1 = not holding any tower, 0 = within default, 1 = within eight, 2 = within slow
+final int notHeld = -1;
+final int def = 0, eight = 1, slow = 2;
+final int towerCount = 3;
 int difX, difY, count;
 
-HashMap<String, Integer> towerPrices = new HashMap<String, Integer>();
+int[] towerPrice = {100, 200, 200};
+color[] towerColours = {#7b9d32, #F098D7, #82E5F7};
+PVector[] originalLocations = {new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Constant, "copy" array to store where the towers are supposed to be
+PVector[] dragAndDropLocations = {new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Where the currently dragged towers are
 
 ArrayList<PVector> towers; // Towers that are placed down
-ArrayList<String> towerType; //type of tower
-
 
 final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3;
 ArrayList<int[]> towerData;
 
-boolean withinDefault, withinEight, withinSlow; // If mouse was held down during the previous frame
 final int towerSize = 25;
-final color defaultTowerColour = #7b9d32;
-final color eightTowerColour = #F098D7;
-final color slowTowerColour = #82E5F7;
 final color towerErrorColour = #E30707; // Colour to display when user purchases tower without sufficient funds
 //final color 
 //these variables are the trash bin coordinates
@@ -28,11 +27,6 @@ int trashX1, trashY1, trashX2, trashY2;
 
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
-void initTowerPrices() {
-  towerPrices.put("default", 100);
-  towerPrices.put("eight", 200);
-  towerPrices.put("slow", 200);
-}
 
 PVector furthestBalloon() {
   float maxDist = 0;
@@ -47,21 +41,21 @@ PVector furthestBalloon() {
 }
 
 int[] makeTowerData() {  
-  if (held.equals("default")) {
+  if (held == def) {
     return new int[] {
       10, // Cooldown between next projectile
       10, // Max cooldown
       300, // Tower Vision
       0 // Projectile ID
     };
-  } else if (held.equals("eight")) {
+  } else if (held == eight) {
     return new int[] {
       25, // Cooldown between next projectile
       25, // Max cooldown
       100, // Tower Vision
       1 // Projectile ID
     };
-  } else if (held.equals("slow")) {
+  } else if (held == slow) {
     return new int[] {
       35,
       35,
@@ -73,19 +67,6 @@ int[] makeTowerData() {
 }
 
 void initDragAndDrop() {
-
-  defaultX = 650;
-  defaultY = 50;
-  
-  eightX = 700;
-  eightY = 50;
-  
-  slowX = 750;
-  slowY = 50;
-
-  withinDefault = false;
-  withinEight = false;
-  
   difX = 0;
   difY = 0;
 
@@ -96,7 +77,6 @@ void initDragAndDrop() {
 
   count = 0;
   towers = new ArrayList<PVector>();
-  towerType = new ArrayList<String>();
   towerData = new ArrayList<int[]>();
 }
 
@@ -105,35 +85,16 @@ boolean pointRectCollision(float x1, float y1, float x2, float y2, float size) {
   //            --X Distance--               --Y Distance--
   return (abs(x2 - x1) <= size / 2) && (abs(y2 - y1) <= size / 2);
 }
-// Check to see if mouse pointer is within the boundaries of the tower
-boolean withinBounds(String towerID) {
-  if (towerID.equals("default")) return withinBoundsDefault();
-  if (towerID.equals("eight")) return withinBoundsEight();
-  if (towerID.equals("slow")) return withinBoundsSlow();
-  return false;
-}
 
-boolean withinBoundsDefault() {
-  return pointRectCollision(mouseX, mouseY, defaultX, defaultY, towerSize);
-}
-
-boolean withinBoundsEight() {
-  return pointRectCollision(mouseX, mouseY, eightX, eightY, towerSize);
-}
-
-boolean withinBoundsSlow() {
-  return pointRectCollision(mouseX, mouseY, slowX, slowY, towerSize);
+boolean withinBounds(int towerID) {
+  PVector towerLocation = dragAndDropLocations[towerID];
+  return pointRectCollision(mouseX, mouseY, towerLocation.x, towerLocation.y, towerSize);
 }
 
 //check if you drop in trash
 boolean trashDrop() {
-  if (held.equals("default") && defaultX >= trashX1 && defaultX <= trashX2 && defaultY >= trashY1 && defaultY <= trashY2) {
-    return true;
-  } else if (held.equals("eight") && eightX >= trashX1 && eightX <= trashX2 && eightY >= trashY1 && eightY <= trashY2) {
-    return true;
-  } else if (held.equals("slow") && slowX >= trashX1 && slowX <= trashX2 && slowY >= trashY1 && slowY <= trashY2) {
-    return true;
-  } 
+  PVector location = dragAndDropLocations[held];
+  if (location.x >= trashX1 && location.x <= trashX2 && location.y >= trashY1 && location.y <= trashY2) return true;
   return false;
 }
 
@@ -141,47 +102,25 @@ boolean trashDrop() {
 void handleDrop() { // Will be called whenever a tower is placed down
   // Instructions to check for valid drop area will go here
   if (trashDrop()) {
-    if (held.equals("default")) {
-      defaultX = 650;
-      defaultY = 50;
-    } else if (held.equals("eight")) {
-      eightX = 700;
-      eightY = 50;
-    } else if (held.equals("slow")) {
-      slowX = 750;
-      slowY = 50;
-    }
+    dragAndDropLocations[held] = originalLocations[held];
     println("Dropped object in trash.");
   } else if (legalDrop()) {
-    if (held.equals("default")) {
-      towers.add(new PVector(defaultX, defaultY));
-      towerType.add("default");
-      towerData.add(makeTowerData());
-      // Add the tower to the list of placed down towers
-      defaultX = 650;
-      defaultY = 50;
-    } else if (held.equals("eight")) {
-      towers.add(new PVector(eightX, eightY));
-      towerType.add("eight");
-      towerData.add(makeTowerData());
-      // Add the tower to the list of placed down towers
-      eightX = 700;
-      eightY = 50;
-    } else if (held.equals("slow")) {
-      towers.add(new PVector(slowX, slowY));
-      towerType.add("slow");
-      towerData.add(makeTowerData());
-      // Add the tower to the list of placed down towers
-      slowX = 750;
-      slowY = 50;
-    }
-    purchaseTower(towerPrice(held));
+    towers.add(dragAndDropLocations[held].copy());
+    towerData.add(makeTowerData());
+    dragAndDropLocations[held] = originalLocations[held];
+    purchaseTower(towerPrice[held]);
     println("Dropped for the " + (++count) + "th time.");
   }
 }
 
 // Will be called whenever a tower is picked up
-void handlePickUp() {
+void handlePickUp(int pickedUpTowerID) {
+  if (withinBounds(pickedUpTowerID) && hasSufficientFunds(towerPrice[pickedUpTowerID])) {
+    held = pickedUpTowerID;
+    PVector location = dragAndDropLocations[pickedUpTowerID];
+    difX = (int) location.x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
+    difY = (int) location.y - mouseY;
+  }
   println("Object picked up.");
 }
 // --------------------------------------------------
@@ -217,25 +156,14 @@ void drawTowerWithRotation(float xPos, float yPos, color colour, PVector targetL
 void drawAllTowers() {
   for (int i = 0; i < towers.size(); i++) {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
-    String type = towerType.get(i);
+    int[] data = towerData.get(i);
+    int towerType = data[projectileType];
     PVector track = furthestBalloon();
     if (track == null) {
-      if (type.equals("default")) {
-        drawTowerIcon(xPos, yPos, defaultTowerColour);
-      } else if (type.equals("eight")) {
-        drawTowerIcon(xPos, yPos, eightTowerColour);
-      } else if (type.equals("slow")) {
-        drawTowerIcon(xPos, yPos, slowTowerColour);
-      }
+      drawTowerIcon(xPos, yPos, towerColours[towerType]);
     } 
     else {
-      if (type.equals("default")) {
-        drawTowerWithRotation(xPos, yPos, defaultTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
-      } else if (type.equals("eight")) {
-        drawTowerWithRotation(xPos, yPos, eightTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
-      } else if (type.equals("slow")) {
-        drawTowerWithRotation(xPos, yPos, slowTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
-      }
+      drawTowerWithRotation(xPos, yPos, towerColours[towerType], new PVector(track.x, track.y));
     }
     fill(#4C6710);
     textSize(12);
@@ -243,47 +171,30 @@ void drawAllTowers() {
   }
 }
 void drawSelectedTowers() {
-  // Draws the tower in the top right and the tower you drag
+  // Draws the tower you're dragging
   // Changing the color if it is an illegal drop to red
-  if (!legalDrop()) {
-    if (held.equals("default")) {
-      drawTowerIcon(defaultX, defaultY, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
-    } else if (held.equals("eight")) {
-      drawTowerIcon(eightX, eightY, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
-    } else if (held.equals("slow")) {
-      drawTowerIcon(slowX, slowY, #FF0000);
-    }
-  
-  } else {
-    if (held.equals("default")) {
-      drawTowerIcon(defaultX, defaultY, defaultTowerColour); // Draw the current tower (that the user is holding)
-    } else if (held.equals("eight")) {
-      drawTowerIcon(eightX, eightY, eightTowerColour);
-    } else if (held.equals("slow")) {
-      drawTowerIcon(slowX, slowY, slowTowerColour);
+  if (held != notHeld) {
+    if (!legalDrop()) {
+      PVector location = dragAndDropLocations[held];
+      drawTowerIcon(location.x, location.y, #FF0000);
+    } else {
+      PVector location = dragAndDropLocations[held];
+      drawTowerIcon(location.x, location.y, towerColours[held]);
     }
   }
 
-  if (attemptingToPurchaseTowerWithoutFunds("default")) {
-    drawTowerIcon(650, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
-  } else drawTowerIcon(650, 50, defaultTowerColour); // Draw the pick-up tower on the top right
-  
-  if (attemptingToPurchaseTowerWithoutFunds("eight")) {
-    drawTowerIcon(700, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
-  } else drawTowerIcon(700, 50, eightTowerColour); // Draw the pick-up tower on the top right
-  
-  if (attemptingToPurchaseTowerWithoutFunds("slow")) {  
-    drawTowerIcon(750, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
-  } else drawTowerIcon(750, 50, slowTowerColour); // Draw the pick-up tower on the top right
-  
-  // Draw the prices of the towers
-  fill(255);
-  textSize(14);
-  int textOffsetX = -15, textOffsetY = 26;
-  text("$" + towerPrice("default"), 650 + textOffsetX, 50 + textOffsetY);
-  text("$" + towerPrice("eight"), 700 + textOffsetX, 50 + textOffsetY);
-  text("$" + towerPrice("slow"), 750 + textOffsetX, 50 + textOffsetY);
- 
+  // Draws the default towers
+  for (int towerType = 0; towerType < towerCount; towerType++) {
+    PVector location = originalLocations[towerType];
+    if (attemptingToPurchaseTowerWithoutFunds(towerType)) {
+      drawTowerIcon(location.x, location.y, towerErrorColour);
+    } else drawTowerIcon(location.x, location.y, towerColours[towerType]);
+    fill(255);
+    textSize(14);
+    int textOffsetX = -15, textOffsetY = 26;
+    // displays the prices of towers
+    text("$" + towerPrice[towerType], location.x + textOffsetX, location.y + textOffsetY);
+  }
 }
 
 void drawTrash() {
@@ -302,7 +213,7 @@ void dragAndDropInstructions() {
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nWithin default object bounds: " + withinDefault + "\nWithin eight object bounds: " + withinEight + "\n Within slow object bounds: " + withinSlow, 15, 20);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nTower Held: " + held, 15, 20);
 }
 
 
@@ -327,25 +238,13 @@ float shortestDist(PVector point) {
   return answer;
 }
 
-// Will return if a drop is legal by looking at the shortance distance between the rectangle center and the path.
+// Will return if a drop is legal by looking at the shortest distance between the rectangle center and the path.
 boolean legalDrop() {
+  PVector heldLocation = dragAndDropLocations[held];
   // checking if this tower overlaps any of the already placed towers
   for (int i = 0; i < towers.size(); i++) {
     PVector towerLocation = towers.get(i);
-    if (held.equals("default")) {
-      if (pointRectCollision(defaultX, defaultY, towerLocation.x, towerLocation.y, towerSize)) return false;
-    } else if (held.equals("eight")) {
-      if (pointRectCollision(eightX, eightY, towerLocation.x, towerLocation.y, towerSize)) return false;
-    } else if (held.equals("slow")) {
-      if (pointRectCollision(slowX, slowY, towerLocation.x, towerLocation.y, towerSize)) return false;
-    }
+    if (pointRectCollision(heldLocation.x, heldLocation.y, towerLocation.x, towerLocation.y, towerSize)) return false;
   }
-  if (held.equals("default")) {
-    return shortestDist(new PVector(defaultX, defaultY)) > PATH_RADIUS;
-  } else if (held.equals("eight")) {
-    return shortestDist(new PVector(eightX, eightY)) > PATH_RADIUS;
-  } else if (held.equals("slow")) {
-    return shortestDist(new PVector(slowX, slowY)) > PATH_RADIUS;
-  }
-  return true;
+  return shortestDist(heldLocation) > PATH_RADIUS;
 }
