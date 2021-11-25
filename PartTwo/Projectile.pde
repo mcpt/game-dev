@@ -66,16 +66,36 @@ public class Projectile {
   }
 }
 
+//-------------------------------- PROJECTILE CREATION (Participants will NOT be required to code the stuff above this line) -----------------------------------
+ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+
+PVector track(PVector towerLocation, int vision) {
+  float maxDist = 0;
+  PVector location = null;
+  for(float[] balloon: balloons) {
+    PVector balloonLocation = getLocation(balloon[distanceTravelled]);
+    // Checks if the tower can see the balloon
+    if (dist(balloonLocation.x, balloonLocation.y, towerLocation.x, towerLocation.y) <= vision) {
+      // If the balloon has travelled further than the previously stored one, it is now the new fastest
+      if(balloon[distanceTravelled] > maxDist) {
+        location = balloonLocation;
+        maxDist = balloon[distanceTravelled];
+      }
+    }
+  }
+  return location;
+}
 
 void handleProjectiles() {
   for(int i = 0; i < towers.size(); i++) {
     PVector location = towers.get(i);
     int[] data = towerData.get(i);
     data[cooldownRemaining]--;
-    if (data[cooldownRemaining] <= 0) {
-      data[cooldownRemaining] = data[maxCooldown];
-      PVector balloon = furthestBalloon();
-      if(balloon == null) return;
+    PVector balloon = track(location, data[towerVision]);
+
+    // Cooldown is 0 and there is a balloon that the tower tracks shoots a projectile 
+    if (data[cooldownRemaining] <= 0 && balloon != null) {
+      data[cooldownRemaining] = data[maxCooldown]; // Resets the cooldown 
       
       PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y); 
       
