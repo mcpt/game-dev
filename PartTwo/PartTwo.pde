@@ -9,6 +9,7 @@ void setup() {
   loadHeartIcon();
   initDragAndDrop();
   initPath();
+  initTowerPrices();
   createFirstWave();
 }
 
@@ -24,6 +25,11 @@ void draw() {
 
   drawBalloons();
   drawHealthBar();
+  drawBalanceDisplay();
+  
+  if (health <= 0) {
+    drawLostAnimation();
+  }
 }
 
 // Whenever the user drags the mouse, update the x and y values of the tower
@@ -47,18 +53,18 @@ void mouseDragged() {
 
 // Whenever the user initially presses down on the mouse
 void mousePressed() {
-  withinDefault = withinBoundsDefault(); // Check to see if the pointer is within the bounds of the tower
-  withinEight = withinBoundsEight();
-  withinSlow = withinBoundsSlow();
-  if (withinDefault) {
+  if (withinBoundsDefault() && hasSufficientFunds(towerPrice("default"))) {
+    withinDefault = true;
     handlePickUp(); // The tower has been "picked up"
     difX = defaultX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = defaultY - mouseY;
-  } else if (withinEight) {
+  } else if (withinBoundsEight() && hasSufficientFunds(towerPrice("eight"))) {
+    withinEight = true;
     handlePickUp(); // The tower has been "picked up"
     difX = eightX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = eightY - mouseY;
-  } else if (withinSlow) {
+  } else if (withinBoundsSlow() && hasSufficientFunds(towerPrice("slow"))) {
+    withinSlow = true;
     handlePickUp();
     difX = slowX - mouseX;
     difY = slowY - mouseY;

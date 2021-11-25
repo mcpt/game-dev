@@ -9,19 +9,8 @@ final int balloonRadius = 25; //Radius of the balloon
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed, hp, slowed (0=no, 1=yes)}
   for(int i = 0; i <= 200; i++) {
-    balloons.add(new float[]{0, i * 5 + 100, random(2, 5), 50, 0});
+    balloons.add(new float[]{0, i * 5 + 100, 3, 50, 0});
   }
-  //balloons.add(new float[]{0, 100, 3, 50});
-  //balloons.add(new float[]{0, 130, 3, 50});
-  //balloons.add(new float[]{0, 160, 2, 50});
-  //balloons.add(new float[]{0, 220, 4, 50});
-  //balloons.add(new float[]{0, 340, 2, 50});
-  //balloons.add(new float[]{0, 370, 2, 50});
-  //balloons.add(new float[]{0, 400, 5, 50});
-  //balloons.add(new float[]{0, 430, 5, 50});
-  //balloons.add(new float[]{0, 490, 3, 50});
-  //balloons.add(new float[]{0, 520, 1, 50});
-  //balloons.add(new float[]{0, 550, 3, 50});
 }
 
 // Displays and moves balloons
@@ -30,7 +19,9 @@ void updatePositions(float[] balloon) {
   if (balloon[delay] == 0) {
 
     PVector position = getLocation(balloon[distanceTravelled]);
-    balloon[distanceTravelled] += balloon[speed]; //Increases the balloon's total steps by the speed
+    float travelSpeed = balloon[speed];
+    if(balloon[slowed] == 1) travelSpeed *= 0.4;
+    balloon[distanceTravelled] += travelSpeed; //Increases the balloon's total steps by the speed
 
     //Drawing of ballon
     ellipseMode(CENTER);
@@ -59,6 +50,9 @@ void updatePositions(float[] balloon) {
     text("Health:   "+health, 670, 462);
     
     fill(#f3cd64);
+    if (balloon[slowed] == 1) {
+      fill(#C19D40);
+    }
     ellipse(position.x, position.y, balloonRadius, balloonRadius);
 
   } else {
@@ -71,6 +65,7 @@ void drawBalloons() {
     float[] balloon = balloons.get(i);
     updatePositions(balloon);
     if (balloon[hp] <= 0) {
+      handleBalloonPop();
       balloons.remove(i);
       i--;
       continue;

@@ -66,7 +66,6 @@ public class Projectile {
   }
 }
 
-final int cooldownRemaining = 0, maxCooldown = 1, projectileType = 2;
 
 void handleProjectiles() {
   for(int i = 0; i < towers.size(); i++) {
@@ -102,7 +101,7 @@ void handleProjectiles() {
         }
       } else if (data[projectileType] == 2) {
         //glue gunner - slows balloons
-        final int speed = 12, damage = 1, pierce = 7, maxTravelDist = 100; //slow-ish speed, low damage, high pierce, low range
+        final int speed = 15, damage = 1, pierce = 7, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);

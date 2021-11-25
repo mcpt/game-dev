@@ -6,8 +6,14 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 int defaultX, defaultY, eightX, eightY, slowX, slowY;
 String held = "default";
 int difX, difY, count;
+
+HashMap<String, Integer> towerPrices = new HashMap<String, Integer>();
+
 ArrayList<PVector> towers; // Towers that are placed down
 ArrayList<String> towerType; //type of tower
+
+
+final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3;
 ArrayList<int[]> towerData;
 
 boolean withinDefault, withinEight, withinSlow; // If mouse was held down during the previous frame
@@ -15,11 +21,18 @@ final int towerSize = 25;
 final color defaultTowerColour = #7b9d32;
 final color eightTowerColour = #F098D7;
 final color slowTowerColour = #82E5F7;
+final color towerErrorColour = #E30707; // Colour to display when user purchases tower without sufficient funds
 //final color 
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
 
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+
+void initTowerPrices() {
+  towerPrices.put("default", 100);
+  towerPrices.put("eight", 150);
+  towerPrices.put("slow", 150);
+}
 
 PVector furthestBalloon() {
   float maxDist = 0;
@@ -38,18 +51,21 @@ int[] makeTowerData() {
     return new int[] {
       10, // Cooldown between next projectile
       10, // Max cooldown
+      300, // Tower Vision
       0 // Projectile ID
     };
   } else if (held.equals("eight")) {
     return new int[] {
       25, // Cooldown between next projectile
       25, // Max cooldown
+      100, // Tower Vision
       1 // Projectile ID
     };
   } else if (held.equals("slow")) {
     return new int[] {
       35,
       35,
+      100, // Tower Vision
       2
     };
   }
@@ -90,6 +106,13 @@ boolean pointRectCollision(float x1, float y1, float x2, float y2, float size) {
   return (abs(x2 - x1) <= size / 2) && (abs(y2 - y1) <= size / 2);
 }
 // Check to see if mouse pointer is within the boundaries of the tower
+boolean withinBounds(String towerID) {
+  if (towerID.equals("default")) return withinBoundsDefault();
+  if (towerID.equals("eight")) return withinBoundsEight();
+  if (towerID.equals("slow")) return withinBoundsSlow();
+  return false;
+}
+
 boolean withinBoundsDefault() {
   return pointRectCollision(mouseX, mouseY, defaultX, defaultY, towerSize);
 }
@@ -152,6 +175,7 @@ void handleDrop() { // Will be called whenever a tower is placed down
       slowX = 750;
       slowY = 50;
     }
+    purchaseTower(towerPrice(held));
     println("Dropped for the " + (++count) + "th time.");
   }
 }
@@ -243,9 +267,26 @@ void drawSelectedTowers() {
     }
   }
 
-  drawTowerIcon(650, 50, defaultTowerColour); // Draw the pick-up tower on the top right
-  drawTowerIcon(700, 50, eightTowerColour);
-  drawTowerIcon(750, 50, slowTowerColour);
+  if (attemptingToPurchaseTowerWithoutFunds("default")) {
+    drawTowerIcon(650, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
+  } else drawTowerIcon(650, 50, defaultTowerColour); // Draw the pick-up tower on the top right
+  
+  if (attemptingToPurchaseTowerWithoutFunds("eight")) {
+    drawTowerIcon(700, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
+  } else drawTowerIcon(700, 50, eightTowerColour); // Draw the pick-up tower on the top right
+  
+  if (attemptingToPurchaseTowerWithoutFunds("slow")) {  
+    drawTowerIcon(750, 50, towerErrorColour); // Draw the tower but filled in using red to signal insufficient funds to purchase the tower
+  } else drawTowerIcon(750, 50, slowTowerColour); // Draw the pick-up tower on the top right
+  
+  // Draw the prices of the towers
+  fill(255);
+  textSize(14);
+  int textOffsetX = -15, textOffsetY = 26;
+  text("$" + towerPrice("default"), 650 + textOffsetX, 50 + textOffsetY);
+  text("$" + towerPrice("eight"), 700 + textOffsetX, 50 + textOffsetY);
+  text("$" + towerPrice("slow"), 750 + textOffsetX, 50 + textOffsetY);
+ 
 }
 
 void drawTrash() {
