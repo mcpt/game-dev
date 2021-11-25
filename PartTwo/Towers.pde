@@ -4,6 +4,7 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 // -------- CODE FOR DRAG & DROP ----------------------
 
 int held = -1; // -1 = not holding any tower, 0 = within default, 1 = within eight, 2 = within slow
+boolean currentlyDragging = false;
 final int notHeld = -1;
 final int def = 0, eight = 1, slow = 2;
 final int towerCount = 3;
@@ -117,6 +118,7 @@ void handleDrop() { // Will be called whenever a tower is placed down
 void handlePickUp(int pickedUpTowerID) {
   if (withinBounds(pickedUpTowerID) && hasSufficientFunds(towerPrice[pickedUpTowerID])) {
     held = pickedUpTowerID;
+    currentlyDragging = true;
     PVector location = dragAndDropLocations[pickedUpTowerID];
     difX = (int) location.x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = (int) location.y - mouseY;

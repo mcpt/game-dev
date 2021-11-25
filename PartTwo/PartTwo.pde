@@ -33,7 +33,7 @@ void draw() {
 
 // Whenever the user drags the mouse, update the x and y values of the tower
 void mouseDragged() {
-  if (held != notHeld) {
+  if (currentlyDragging) {
     dragAndDropLocations[held] = new PVector(mouseX + difX, mouseY + difY);
   }
 }
@@ -47,8 +47,8 @@ void mousePressed() {
 
 // Whenever the user releases their mouse
 void mouseReleased() {
-  if (held != notHeld) {
+  if (currentlyDragging) {
     handleDrop();
   }
-  held = notHeld;
+  currentlyDragging = false;
 }
