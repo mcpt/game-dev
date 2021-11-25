@@ -2,7 +2,7 @@
 Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End of Path
 */
 
-ArrayList<float[]> balloons = new ArrayList<float[]>();
+ArrayList<float[]> balloons = new ArrayList<>();
 final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3;
 final int balloonRadius = 25; //Radius of the balloon
 
@@ -71,8 +71,6 @@ void drawBalloons() {
     float[] balloon = balloons.get(i);
     updatePositions(balloon);
     if (balloon[hp] <= 0) {
-      handleBalloonPop(); // the balloon has been popped by a tower
-      
       balloons.remove(i);
       i--;
       continue;

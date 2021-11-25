@@ -1,3 +1,5 @@
+// This program is used to simulate picking up, dragging, and dropping objects
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +24,6 @@ void draw() {
 
   drawBalloons();
   drawHealthBar();
-  
-  drawBalanceDisplay();
 }
 
 // Whenever the user drags the mouse, update the x and y values of the tower
@@ -37,7 +37,13 @@ void mouseDragged() {
 
 // Whenever the user initially presses down on the mouse
 void mousePressed() {
-  handlePickUp(); // The tower has been "picked up"
+  within = withinBounds(); // Check to see if the pointer is within the bounds of the tower
+
+  if (within) {
+    handlePickUp(); // The tower has been "picked up"
+    difX = x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
+    difY = y - mouseY;
+  }
 }
 
 // Whenever the user releases their mouse
