@@ -3,17 +3,18 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
  */
 // -------- CODE FOR DRAG & DROP ----------------------
 
-int defaultX, defaultY, eightX, eightY;
+int defaultX, defaultY, eightX, eightY, slowX, slowY;
 String held = "default";
 int difX, difY, count;
 ArrayList<PVector> towers; // Towers that are placed down
 ArrayList<String> towerType; //type of tower
 ArrayList<int[]> towerData;
 
-boolean withinDefault, withinEight; // If mouse was held down during the previous frame
+boolean withinDefault, withinEight, withinSlow; // If mouse was held down during the previous frame
 final int towerSize = 25;
 final color defaultTowerColour = #7b9d32;
 final color eightTowerColour = #F098D7;
+final color slowTowerColour = #82E5F7;
 //final color 
 //these variables are the trash bin coordinates
 int trashX1, trashY1, trashX2, trashY2;
@@ -45,6 +46,12 @@ int[] makeTowerData() {
       25, // Max cooldown
       1 // Projectile ID
     };
+  } else if (held.equals("slow")) {
+    return new int[] {
+      35,
+      35,
+      2
+    };
   }
   return new int[] {}; //filler since we need to return something
 }
@@ -56,6 +63,9 @@ void initDragAndDrop() {
   
   eightX = 700;
   eightY = 50;
+  
+  slowX = 750;
+  slowY = 50;
 
   withinDefault = false;
   withinEight = false;
@@ -88,13 +98,19 @@ boolean withinBoundsEight() {
   return pointRectCollision(mouseX, mouseY, eightX, eightY, towerSize);
 }
 
+boolean withinBoundsSlow() {
+  return pointRectCollision(mouseX, mouseY, slowX, slowY, towerSize);
+}
+
 //check if you drop in trash
 boolean trashDrop() {
   if (held.equals("default") && defaultX >= trashX1 && defaultX <= trashX2 && defaultY >= trashY1 && defaultY <= trashY2) {
     return true;
   } else if (held.equals("eight") && eightX >= trashX1 && eightX <= trashX2 && eightY >= trashY1 && eightY <= trashY2) {
     return true;
-  }
+  } else if (held.equals("slow") && slowX >= trashX1 && slowX <= trashX2 && slowY >= trashY1 && slowY <= trashY2) {
+    return true;
+  } 
   return false;
 }
 
@@ -108,6 +124,9 @@ void handleDrop() { // Will be called whenever a tower is placed down
     } else if (held.equals("eight")) {
       eightX = 700;
       eightY = 50;
+    } else if (held.equals("slow")) {
+      slowX = 750;
+      slowY = 50;
     }
     println("Dropped object in trash.");
   } else if (legalDrop()) {
@@ -125,6 +144,13 @@ void handleDrop() { // Will be called whenever a tower is placed down
       // Add the tower to the list of placed down towers
       eightX = 700;
       eightY = 50;
+    } else if (held.equals("slow")) {
+      towers.add(new PVector(slowX, slowY));
+      towerType.add("slow");
+      towerData.add(makeTowerData());
+      // Add the tower to the list of placed down towers
+      slowX = 750;
+      slowY = 50;
     }
     println("Dropped for the " + (++count) + "th time.");
   }
@@ -178,14 +204,17 @@ void drawAllTowers() {
         drawTowerIcon(xPos, yPos, defaultTowerColour);
       } else if (type.equals("eight")) {
         drawTowerIcon(xPos, yPos, eightTowerColour);
+      } else if (type.equals("slow")) {
+        drawTowerIcon(xPos, yPos, slowTowerColour);
       }
-      
     } 
     else {
       if (type.equals("default")) {
         drawTowerWithRotation(xPos, yPos, defaultTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
       } else if (type.equals("eight")) {
         drawTowerWithRotation(xPos, yPos, eightTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
+      } else if (type.equals("slow")) {
+        drawTowerWithRotation(xPos, yPos, slowTowerColour, new PVector(track.x, track.y)); // Towers will track the mouse as a placeholder
       }
     }
     fill(#4C6710);
@@ -200,6 +229,8 @@ void drawSelectedTowers() {
       drawTowerIcon(defaultX, defaultY, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
     } else if (held.equals("eight")) {
       drawTowerIcon(eightX, eightY, #FF0000); // Draw the current tower (that the user is holding) as red to indicate illegal
+    } else if (held.equals("slow")) {
+      drawTowerIcon(slowX, slowY, #FF0000);
     }
   
   } else {
@@ -207,11 +238,14 @@ void drawSelectedTowers() {
       drawTowerIcon(defaultX, defaultY, defaultTowerColour); // Draw the current tower (that the user is holding)
     } else if (held.equals("eight")) {
       drawTowerIcon(eightX, eightY, eightTowerColour);
+    } else if (held.equals("slow")) {
+      drawTowerIcon(slowX, slowY, slowTowerColour);
     }
   }
 
   drawTowerIcon(650, 50, defaultTowerColour); // Draw the pick-up tower on the top right
   drawTowerIcon(700, 50, eightTowerColour);
+  drawTowerIcon(750, 50, slowTowerColour);
 }
 
 void drawTrash() {
@@ -230,7 +264,7 @@ void dragAndDropInstructions() {
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nWithin default object bounds: " + withinDefault + "\nWithin eight object bounds: " + withinEight, 15, 20);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nWithin default object bounds: " + withinDefault + "\nWithin eight object bounds: " + withinEight + "\n Within slow object bounds: " + withinSlow, 15, 20);
 }
 
 
@@ -263,13 +297,17 @@ boolean legalDrop() {
     if (held.equals("default")) {
       if (pointRectCollision(defaultX, defaultY, towerLocation.x, towerLocation.y, towerSize)) return false;
     } else if (held.equals("eight")) {
-      if (pointRectCollision(defaultX, defaultY, towerLocation.x, towerLocation.y, towerSize)) return false;
+      if (pointRectCollision(eightX, eightY, towerLocation.x, towerLocation.y, towerSize)) return false;
+    } else if (held.equals("slow")) {
+      if (pointRectCollision(slowX, slowY, towerLocation.x, towerLocation.y, towerSize)) return false;
     }
   }
   if (held.equals("default")) {
     return shortestDist(new PVector(defaultX, defaultY)) > PATH_RADIUS;
   } else if (held.equals("eight")) {
     return shortestDist(new PVector(eightX, eightY)) > PATH_RADIUS;
+  } else if (held.equals("slow")) {
+    return shortestDist(new PVector(slowX, slowY)) > PATH_RADIUS;
   }
   return true;
 }

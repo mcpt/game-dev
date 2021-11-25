@@ -37,6 +37,10 @@ void mouseDragged() {
     held = "eight";
     eightX = mouseX + difX;
     eightY = mouseY + difY;
+  } else if (withinSlow) {
+    held = "slow";
+    slowX = mouseX + difX;
+    slowY = mouseY + difY;
   }
     
 }
@@ -45,24 +49,29 @@ void mouseDragged() {
 void mousePressed() {
   withinDefault = withinBoundsDefault(); // Check to see if the pointer is within the bounds of the tower
   withinEight = withinBoundsEight();
+  withinSlow = withinBoundsSlow();
   if (withinDefault) {
     handlePickUp(); // The tower has been "picked up"
     difX = defaultX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = defaultY - mouseY;
-    
   } else if (withinEight) {
     handlePickUp(); // The tower has been "picked up"
     difX = eightX - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = eightY - mouseY;
+  } else if (withinSlow) {
+    handlePickUp();
+    difX = slowX - mouseX;
+    difY = slowY - mouseY;
   }
 }
 
 // Whenever the user releases their mouse
 void mouseReleased() {
-  if (withinBoundsDefault() || withinBoundsEight()) { // If the user was holding the tower in the previous frame, the tower has just been dropped
+  if (withinBoundsDefault() || withinBoundsEight() || withinBoundsSlow()) { // If the user was holding the tower in the previous frame, the tower has just been dropped
     handleDrop(); // Call the method to handle the drop and check for drop validity
   }
 
   withinDefault = false; // The mouse is no longer holding the tower
   withinEight = false;
+  withinSlow = false;
 }
