@@ -91,7 +91,7 @@ void handleProjectiles() {
       } else if (data[projectileType] == 1) {
         // Spread in 8
         for (int j = 0; j < 8; j++) {
-          final int speed = 12, damage = 2, pierce = 2, maxTravelDist = 150;
+          final int speed = 12, damage = 4, pierce = 2, maxTravelDist = 150;
           float angle = (PI * 2) * j / 8;
           PVector unitVector = PVector.div(toMouse, toMouse.mag());
           
@@ -110,13 +110,13 @@ void handleProjectiles() {
       }
     }
   }
-  
+  ArrayList<Projectile> newListWithoutDeadProjectiles = new ArrayList<Projectile>();
   for(int i = 0; i < projectiles.size(); i++) {
     Projectile p = projectiles.get(i);
     p.draw();
-    if (p.dead()) {
-      projectiles.remove(i);
-      i--;
+    if (!p.dead()) {
+      newListWithoutDeadProjectiles.add(p);
     }
   }
+  projectiles = newListWithoutDeadProjectiles;
 }

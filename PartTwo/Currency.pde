@@ -5,7 +5,7 @@
  */
 
 // Current amount of money owned by the player
-int currentBalance = 1000; // Give the user $1000 of starting balance
+int currentBalance = 750; // Give the user $750 of starting balance
 final int rewardPerBalloon = 20; // Money earned by popping a balloon
 int towerPrice(String towerType) {
   return towerPrices.get(towerType);

@@ -30,8 +30,8 @@ ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 void initTowerPrices() {
   towerPrices.put("default", 100);
-  towerPrices.put("eight", 150);
-  towerPrices.put("slow", 150);
+  towerPrices.put("eight", 200);
+  towerPrices.put("slow", 200);
 }
 
 PVector furthestBalloon() {
@@ -196,10 +196,6 @@ void drawTowerIcon(float xPos, float yPos, color colour) {
 }
 // Draws a tower that rotates to face the targetLocation
 void drawTowerWithRotation(float xPos, float yPos, color colour, PVector targetLocation) {
-  strokeWeight(5);
-  stroke(#4C6710);
-
-  line(xPos, yPos, targetLocation.x, targetLocation.y);
   pushMatrix();
   translate(xPos, yPos);
 
@@ -242,6 +238,7 @@ void drawAllTowers() {
       }
     }
     fill(#4C6710);
+    textSize(12);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
   }
 }

@@ -5,11 +5,11 @@ Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End
 ArrayList<float[]> balloons = new ArrayList<float[]>();
 final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3, slowed=4;
 final int balloonRadius = 25; //Radius of the balloon
-
+final int maxBalloonHP = 50;
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed, hp, slowed (0=no, 1=yes)}
   for(int i = 0; i <= 200; i++) {
-    balloons.add(new float[]{0, i * 5 + 100, 3, 50, 0});
+    balloons.add(new float[]{0, i * 5 + 100, 3, maxBalloonHP, 0});
   }
 }
 
@@ -39,7 +39,7 @@ void updatePositions(float[] balloon) {
     //draw mini healthbar
     noStroke();
     fill(#FF3131);
-    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / 50), hbWidth); //the healthbar that changes based on hp
+    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / maxBalloonHP), hbWidth); //the healthbar that changes based on hp
  
     noFill();
   
