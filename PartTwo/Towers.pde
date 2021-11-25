@@ -3,13 +3,13 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
  */
 // -------- CODE FOR DRAG & DROP ----------------------
 
-int held = -1; // -1 = not holding any tower, 0 = within default, 1 = within eight, 2 = within slow
-boolean currentlyDragging = false;
-final int notHeld = -1;
+int currentlyDragging = -1; // -1 = not holding any tower, 0 = within default, 1 = within eight, 2 = within slow
+final int notDragging = -1;
 final int def = 0, eight = 1, slow = 2;
 final int towerCount = 3;
 int difX, difY, count;
 
+boolean[] held = {false, false, false};
 int[] towerPrice = {100, 200, 200};
 color[] towerColours = {#7b9d32, #F098D7, #82E5F7};
 PVector[] originalLocations = {new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Constant, "copy" array to store where the towers are supposed to be
@@ -41,22 +41,22 @@ PVector furthestBalloon() {
   return location;
 }
 
-int[] makeTowerData() {  
-  if (held == def) {
+int[] makeTowerData(int towerID) {  
+  if (towerID == def) {
     return new int[] {
       10, // Cooldown between next projectile
       10, // Max cooldown
       300, // Tower Vision
       0 // Projectile ID
     };
-  } else if (held == eight) {
+  } else if (towerID == eight) {
     return new int[] {
       25, // Cooldown between next projectile
       25, // Max cooldown
       100, // Tower Vision
       1 // Projectile ID
     };
-  } else if (held == slow) {
+  } else if (towerID == slow) {
     return new int[] {
       35,
       35,
@@ -93,23 +93,25 @@ boolean withinBounds(int towerID) {
 }
 
 //check if you drop in trash
-boolean trashDrop() {
-  PVector location = dragAndDropLocations[held];
+boolean trashDrop(int towerID) {
+  PVector location = dragAndDropLocations[towerID];
   if (location.x >= trashX1 && location.x <= trashX2 && location.y >= trashY1 && location.y <= trashY2) return true;
   return false;
 }
 
 // -------Methods Used for further interaction-------
-void handleDrop() { // Will be called whenever a tower is placed down
+void handleDrop(int towerID) { // Will be called whenever a tower is placed down
   // Instructions to check for valid drop area will go here
-  if (trashDrop()) {
-    dragAndDropLocations[held] = originalLocations[held];
+  if (trashDrop(towerID)) {
+    dragAndDropLocations[towerID] = originalLocations[towerID];
+    held[currentlyDragging] = false;
     println("Dropped object in trash.");
-  } else if (legalDrop()) {
-    towers.add(dragAndDropLocations[held].copy());
-    towerData.add(makeTowerData());
-    dragAndDropLocations[held] = originalLocations[held];
-    purchaseTower(towerPrice[held]);
+  } else if (legalDrop(towerID)) {
+    towers.add(dragAndDropLocations[towerID].copy());
+    towerData.add(makeTowerData(towerID));
+    dragAndDropLocations[towerID] = originalLocations[towerID];
+    held[currentlyDragging] = false;
+    purchaseTower(towerPrice[towerID]);
     println("Dropped for the " + (++count) + "th time.");
   }
 }
@@ -117,8 +119,8 @@ void handleDrop() { // Will be called whenever a tower is placed down
 // Will be called whenever a tower is picked up
 void handlePickUp(int pickedUpTowerID) {
   if (withinBounds(pickedUpTowerID) && hasSufficientFunds(towerPrice[pickedUpTowerID])) {
-    held = pickedUpTowerID;
-    currentlyDragging = true;
+    currentlyDragging = pickedUpTowerID;
+    held[currentlyDragging] = true;
     PVector location = dragAndDropLocations[pickedUpTowerID];
     difX = (int) location.x - mouseX; // Calculate the offset values (the mouse pointer may not be in the direct centre of the tower)
     difY = (int) location.y - mouseY;
@@ -167,6 +169,14 @@ void drawAllTowers() {
     else {
       drawTowerWithRotation(xPos, yPos, towerColours[towerType], new PVector(track.x, track.y));
     }
+    if(pointRectCollision(mouseX, mouseY, xPos, yPos, towerSize)) {
+      // Drawing the tower range visually 
+      fill(127, 80);
+      stroke(127);
+      strokeWeight(4);
+      ellipseMode(RADIUS);
+      ellipse(xPos, yPos, data[towerVision], data[towerVision]);
+    }
     fill(#4C6710);
     textSize(12);
     text("Tower " + (i+1), xPos - 30, yPos - 20);
@@ -175,16 +185,17 @@ void drawAllTowers() {
 void drawSelectedTowers() {
   // Draws the tower you're dragging
   // Changing the color if it is an illegal drop to red
-  if (held != notHeld) {
-    if (!legalDrop()) {
-      PVector location = dragAndDropLocations[held];
-      drawTowerIcon(location.x, location.y, #FF0000);
-    } else {
-      PVector location = dragAndDropLocations[held];
-      drawTowerIcon(location.x, location.y, towerColours[held]);
+  for (int i = 0; i < towerCount; i++) {
+    if (held[i]) {
+      if (!legalDrop(i)) {
+        PVector location = dragAndDropLocations[i];
+        drawTowerIcon(location.x, location.y, #FF0000);
+      } else {
+        PVector location = dragAndDropLocations[i];
+        drawTowerIcon(location.x, location.y, towerColours[i]);
+      }
     }
   }
-
   // Draws the default towers
   for (int towerType = 0; towerType < towerCount; towerType++) {
     PVector location = originalLocations[towerType];
@@ -215,7 +226,7 @@ void dragAndDropInstructions() {
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nTower Held: " + held, 15, 20);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nTower Held: " + currentlyDragging, 15, 20);
 }
 
 
@@ -241,8 +252,8 @@ float shortestDist(PVector point) {
 }
 
 // Will return if a drop is legal by looking at the shortest distance between the rectangle center and the path.
-boolean legalDrop() {
-  PVector heldLocation = dragAndDropLocations[held];
+boolean legalDrop(int towerID) {
+  PVector heldLocation = dragAndDropLocations[towerID];
   // checking if this tower overlaps any of the already placed towers
   for (int i = 0; i < towers.size(); i++) {
     PVector towerLocation = towers.get(i);
