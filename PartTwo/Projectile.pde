@@ -24,7 +24,7 @@ public class Projectile {
     pierce--;
     balloon[hp] -= damage;
     if(dmgType.equals("slow") && balloon[slowed]==0){
-      balloon[speed] -=1; 
+      balloon[speed] *= 0.4; 
       balloon[slowed]=1;
     }
     balloonsHit.add(balloon);

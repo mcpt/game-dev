@@ -20,7 +20,6 @@ void updatePositions(float[] balloon) {
 
     PVector position = getLocation(balloon[distanceTravelled]);
     float travelSpeed = balloon[speed];
-    if(balloon[slowed] == 1) travelSpeed *= 0.4;
     balloon[distanceTravelled] += travelSpeed; //Increases the balloon's total steps by the speed
 
     //Drawing of ballon
