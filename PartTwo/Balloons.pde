@@ -8,8 +8,8 @@ final int balloonRadius = 25; //Radius of the balloon
 final int maxBalloonHP = 50;
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed, hp, slowed (0=no, 1=yes)}
-  for(int i = 0; i <= 200; i++) {
-    balloons.add(new float[]{0, i * 5 + 100, 3, maxBalloonHP, 0});
+  for(int i = 0; i <= 100; i++) {
+    balloons.add(new float[]{0, i * 10 + 100, 3, maxBalloonHP, 0});
   }
 }
 
@@ -28,26 +28,29 @@ void updatePositions(float[] balloon) {
     stroke(0);
     fill(0);
     
-    //draw healthbar outline
-    stroke(0, 0, 0);
-    strokeWeight(0);
-    rectMode(CORNER);
-    fill(#830000);
-    final float hbLength = 35, hbWidth = 6;
-    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength, hbWidth);
-    //draw mini healthbar
-    noStroke();
-    fill(#FF3131);
-    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / maxBalloonHP), hbWidth); //the healthbar that changes based on hp
- 
-    noFill();
-  
-    //write text
-    stroke(0, 0, 0);
-    textSize(14);
-    fill(255, 255, 255);
-    text("Health:   "+health, 670, 462);
     
+    
+    if (balloon[hp] < maxBalloonHP) {
+      //draw healthbar outline
+      stroke(0, 0, 0);
+      strokeWeight(0);
+      rectMode(CORNER);
+      fill(#830000);
+      final float hbLength = 35, hbWidth = 6;
+      rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength, hbWidth);
+      //draw mini healthbar
+      noStroke();
+      fill(#FF3131);
+      rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / maxBalloonHP), hbWidth); //the healthbar that changes based on hp
+   
+      noFill();
+    
+      //write text
+      stroke(0, 0, 0);
+      textSize(14);
+      fill(255, 255, 255);
+      text("Health:   "+health, 670, 462);
+    }
     fill(#f3cd64);
     if (balloon[slowed] == 1) {
       fill(#C19D40);
