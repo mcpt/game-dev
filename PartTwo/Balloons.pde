@@ -3,13 +3,13 @@ Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End
 */
 
 ArrayList<float[]> balloons = new ArrayList<float[]>();
-final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3, slowed=4;
+final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3, slowed = 4, ID = 5;
 final int balloonRadius = 25; //Radius of the balloon
 final int maxBalloonHP = 50;
 void createFirstWave() {
 //{Number of "steps" taken, frames of delay before first step, speed, hp, slowed (0=no, 1=yes)}
   for(int i = 0; i <= 100; i++) {
-    balloons.add(new float[]{0, i * 10 + 100, 3, maxBalloonHP, 0});
+    balloons.add(new float[]{0, i * 10 + 100, 3, maxBalloonHP, 0, i});
   }
 }
 

@@ -1,84 +1,75 @@
-public class Projectile {
-  private PVector center, velocity;
-  private float angle;
-  private final float radius = 11;
-  private float thickness;
-  private float damage;
-  private float maxDistTravelled;
-  private float currDistTravelled = 0;
-  private String dmgType;
-  
-  private int pierce;
-  private ArrayList<float[]> balloonsHit; // Checks via reference... (change this to be more suitable for the workshop? Maybe have each balloon have a specific ID instead?)
-  public Projectile(PVector centre, PVector velocity, float damage, int pierce, float maxDistTravelled, float thickness, String dmgType) {
-    balloonsHit = new ArrayList<float[]>();
-    this.center = centre;
-    this.velocity = velocity;
-    this.angle = atan2(velocity.y, velocity.x);
-    this.damage = damage;
-    this.pierce = pierce;
-    this.maxDistTravelled = maxDistTravelled;
-    this.dmgType = dmgType;
-    this.thickness = thickness;
-  }
-  public void hitBalloon(float[] balloon) {
-    if (pierce == 0 || balloonsHit.contains(balloon)) return;
-    pierce--;
-    balloon[hp] -= damage;
-    if(dmgType.equals("slow") && balloon[slowed]==0){
-      balloon[speed] *= 0.7; 
-      balloon[slowed]=1;
-    }
-    balloonsHit.add(balloon);
-  }
-  public void collisionWithBalloons() {
-    for(float[] balloon: balloons) {
-      if (balloon[delay] != 0) continue; // If the balloon hasn't entered yet, don't count it
-      PVector position = getLocation(balloon[distanceTravelled]);
-      if(this.dist(position) <= balloonRadius / 2 + thickness / 2) {
-        hitBalloon(balloon);
-      }
-    }
-  }
-  public void draw() {
-    stroke(255);
-    strokeWeight(thickness);
-    float width = cos(angle), height = sin(angle);
-    PVector displacement = new PVector(width, height).mult(radius);
-    if (dmgType.equals("laser")) displacement.mult(1000);
-    PVector start = PVector.add(center, displacement), end = PVector.sub(center, displacement);
-    if (dmgType.equals("laser")) end = center;
-    line(start.x, start.y, end.x, end.y);
+ArrayList<PVector> center = new ArrayList<PVector>(), velocity = new ArrayList<PVector>();
+ArrayList<float[]> projectileData = new ArrayList<float[]>();
+ArrayList<ArrayList<Integer>> balloonsHit = new ArrayList<ArrayList<Integer>>();
+final int damage = 0, pierce = 1, angle = 2, currDistTravelled = 3, maxDistTravelled = 4, thickness = 5, dmgType = 6;
+final int projectileRadius = 11;
 
-    collisionWithBalloons();
-    // Updating angle and center
-    // angle += 5 * PI / 180;
-    angle %= 360;
-    if (!dmgType.equals("laser"))
-      center = PVector.add(center, velocity);
-    if (!dmgType.equals("laser"))
-      currDistTravelled += velocity.mag();
-    else currDistTravelled++;
-  }
-  public float dist(PVector point) {
-    float width = cos(angle), height = sin(angle);
-    PVector displacement = new PVector(width, height).mult(radius);
-    if (dmgType.equals("laser")) displacement.mult(1000);
-    PVector start = PVector.add(center, displacement), end = PVector.sub(center, displacement);
-    if (dmgType.equals("laser")) end = center;
-    return pointDistToLine(start, end, point);
-  }
-  public boolean dead() {
-    return offScreen() || pierce == 0 || currDistTravelled > maxDistTravelled;
-  }
-  public boolean offScreen() { 
-    return center.x < 0 || center.x > 800 || center.y < 0 || center.y > 500;
-  }
+void createProjectile(PVector centre, PVector vel, float damage, int pierce, float maxDistTravelled, float thickness, int dmgType) {
+  balloonsHit.add(new ArrayList<Integer>());
+  center.add(centre);
+  velocity.add(vel);
+  float angle = atan2(vel.y, vel.x);
+  projectileData.add(new float[]{damage, pierce, angle, 0, maxDistTravelled, thickness, dmgType});
+}
+float distToProjectile(int projectileID, PVector point) {
+  float[] data = projectileData.get(projectileID);
+  float width = cos(data[angle]), height = sin(data[angle]);
+  PVector displacement = new PVector(width, height).mult(projectileRadius);
+  if (data[dmgType] == laser) displacement.mult(1000);
+  PVector start = PVector.add(center.get(projectileID), displacement), end = PVector.sub(center.get(projectileID), displacement);
+  if (data[dmgType] == laser) end = center.get(projectileID);
+  return pointDistToLine(start, end, point);
+}
+public boolean dead(int projectileID) {
+  float[] data = projectileData.get(projectileID);
+  return offScreen(projectileID) || data[pierce] == 0 || data[currDistTravelled] > data[maxDistTravelled];
+}
+public boolean offScreen(int projectileID) { 
+  return center.get(projectileID).x < 0 || center.get(projectileID).x > 800 || center.get(projectileID).y < 0 || center.get(projectileID).y > 500;
 }
 
-//-------------------------------- PROJECTILE CREATION (Participants will NOT be required to code the stuff above this line) -----------------------------------
-ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+void drawProjectile(int projectileID) {
+  float[] data = projectileData.get(projectileID);
+  stroke(255);
+  strokeWeight(data[thickness]);
+  float width = cos(data[angle]), height = sin(data[angle]);
+  PVector displacement = new PVector(width, height).mult(projectileRadius);
+  if (data[dmgType] == laser) displacement.mult(1000);
+  PVector start = PVector.add(center.get(projectileID), displacement), end = PVector.sub(center.get(projectileID), displacement);
+  if (data[dmgType] == laser) end = center.get(projectileID);
+  line(start.x, start.y, end.x, end.y);
 
+  handleCollision(projectileID);
+  if (data[dmgType] != laser)
+    center.set(projectileID, PVector.add(center.get(projectileID), velocity.get(projectileID)));
+  if (data[dmgType] != laser)
+    data[currDistTravelled] += velocity.get(projectileID).mag();
+  else data[currDistTravelled]++;
+}
+
+void hitBalloon(int projectileID, float[] balloonData) {
+  float[] data = projectileData.get(projectileID);
+  if (data[pierce] == 0 || balloonsHit.get(projectileID).contains((int) balloonData[ID])) return;
+  data[pierce]--;
+  balloonData[hp] -= data[damage];
+  if(data[dmgType] == slow && balloonData[slowed] == 0){
+    balloonData[speed] *= 0.7; 
+    balloonData[slowed] = 1;
+  }
+  balloonsHit.get(projectileID).add((int) balloonData[ID]);
+}
+
+void handleCollision(int projectileID) {
+  float[] data = projectileData.get(projectileID);
+  for(float[] balloon: balloons) {
+    if (balloon[delay] != 0) continue; // If the balloon hasn't entered yet, don't count it
+    PVector position = getLocation(balloon[distanceTravelled]);
+    if(distToProjectile(projectileID, position) <= balloonRadius / 2 + data[thickness] / 2) {
+      hitBalloon(projectileID, balloon);
+    }
+  }
+}
+//-------------------------------- PROJECTILE CREATION (Participants will NOT be required to code the stuff above this line) -----------------------------------
 PVector track(PVector towerLocation, int vision) {
   float maxDist = 0;
   PVector location = null;
@@ -115,9 +106,7 @@ void handleProjectiles() {
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);
-        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist, thickness, "default");
-        projectiles.add(projectile);
-        
+        createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, def);
         // Default type
       } else if (data[projectileType] == 1) {
         // Spread in 8
@@ -127,8 +116,7 @@ void handleProjectiles() {
           PVector unitVector = PVector.div(toMouse, toMouse.mag());
           
           PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
-          Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist, thickness, "default");
-          projectiles.add(projectile);
+          createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, eight);
         }
       } else if (data[projectileType] == 2) {
         //glue gunner - slows balloons
@@ -136,26 +124,25 @@ void handleProjectiles() {
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);
-        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist, thickness, "slow");
-        projectiles.add(projectile);
+        createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, slow);
       } else if (data[projectileType] == 3) {
-        final int speed = 1000, pierce = 50, maxTravelDist = data[maxCooldown], thickness = 32; // speed & travel dist are custom, maxTravelDist basically acts like a counter 
-        final float damage = 0.16;
+        final int speed = 1, pierce = 50, maxTravelDist = data[maxCooldown], thickness = 32; // speed & travel dist are custom, maxTravelDist basically acts like a counter 
+        final float damage = 0.10;
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
         
         PVector velocity = PVector.mult(unitVector, speed);
-        Projectile projectile = new Projectile(location, velocity, damage, pierce, maxTravelDist, thickness, "laser");
-        projectiles.add(projectile);
+        createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, laser);
       }
     }
   }
-  ArrayList<Projectile> newListWithoutDeadProjectiles = new ArrayList<Projectile>();
-  for(int i = 0; i < projectiles.size(); i++) {
-    Projectile p = projectiles.get(i);
-    p.draw();
-    if (!p.dead()) {
-      newListWithoutDeadProjectiles.add(p);
+  for(int i = 0; i < projectileData.size(); i++) {
+    drawProjectile(i);
+    if (dead(i)) {
+      projectileData.remove(i);
+      center.remove(i);
+      velocity.remove(i);
+      balloonsHit.remove(i);
+      i--;
     }
   }
-  projectiles = newListWithoutDeadProjectiles;
 }
