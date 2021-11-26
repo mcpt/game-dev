@@ -6,7 +6,7 @@
 
 // Current amount of money owned by the player
 int currentBalance = 750; // Give the user $750 of starting balance
-final int rewardPerBalloon = 20; // Money earned by popping a balloon
+final int rewardPerBalloon = 15; // Money earned by popping a balloon
 
 void handleBalloonPop() {
   // Reward the player for popping the balloon
@@ -52,7 +52,7 @@ boolean attemptingToPurchaseTowerWithoutFunds(int towerID) {
 void drawBalanceDisplay() {
   // If the user is attempting to purchase a tower without funds, warn them with red display text
   boolean error = false;
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < towerCount; i++) {
     if (attemptingToPurchaseTowerWithoutFunds(i)) {
       error = true;
     }
