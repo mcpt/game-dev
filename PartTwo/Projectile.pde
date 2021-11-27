@@ -122,14 +122,14 @@ void handleProjectiles() {
 
       PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y);
 
-      if (data[projectileType] == 0) {
+      if (data[projectileType] == def) {
         final int speed = 24, damage = 6, pierce = 1, maxTravelDist = 500;
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
 
         PVector velocity = PVector.mult(unitVector, speed);
         createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, def);
         // Default type
-      } else if (data[projectileType] == 1) {
+      } else if (data[projectileType] == eight) {
         // Spread in 8
         for (int j = 0; j < 8; j++) {
           final int speed = 12, damage = 4, pierce = 2, maxTravelDist = 150;
@@ -139,7 +139,7 @@ void handleProjectiles() {
           PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
           createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, eight);
         }
-      } else if (data[projectileType] == 2) {
+      } else if (data[projectileType] == slow) {
         //glue gunner - slows balloons
         final int speed = 15, damage = 1, pierce = 7, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
