@@ -4,11 +4,8 @@ Encompasses: Displaying Towers & Tower Data (for projectiles)
 
 
 final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3;
-final int def = 0, eight = 1, slow = 2, laser = 3;
-final int towerCount = 4;
-
 ArrayList<int[]> towerData;
-int[] towerVisions = {200, 100, 100, 300};
+int[] towerVisions = {200, 100, 100};
 int[] makeTowerData(int towerID) {  
   if (towerID == def) {
     return new int[] {
@@ -30,13 +27,6 @@ int[] makeTowerData(int towerID) {
       35,
       towerVisions[slow], // Tower Vision
       2
-    };
-  } else if (towerID == laser) {
-    return new int[] {
-      1,
-      1,
-      towerVisions[laser],
-      3
     };
   }
   return new int[] {}; //filler since we need to return something
@@ -78,7 +68,6 @@ void drawAllTowers() {
     int[] data = towerData.get(i);
     int towerType = data[projectileType];
     PVector track = track(towers.get(i), data[towerVision]);
-    if (data[projectileType] == laser) track = new PVector(mouseX, mouseY);
     if (track == null) {
       drawTowerIcon(xPos, yPos, towerColours[towerType]);
     } 

@@ -5,14 +5,15 @@ Encompasses: Displaying Towers, Drag & Drop, Discarding Towers, Rotating Towers,
 
 int currentlyDragging = -1; // -1 = not holding any tower, 0 = within default, 1 = within eight, 2 = within slow
 final int notDragging = -1;
-
+final int def = 0, eight = 1, slow = 2;
+final int towerCount = 3;
 int difX, difY, count;
 
-boolean[] held = {false, false, false, false};
-int[] towerPrice = {100, 200, 200, 400};
-color[] towerColours = {#7b9d32, #F098D7, #82E5F7, #EA0C0C};
-PVector[] originalLocations = {new PVector(600, 50), new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Constant, "copy" array to store where the towers are supposed to be
-PVector[] dragAndDropLocations = {new PVector(600, 50), new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Where the currently dragged towers are
+boolean[] held = {false, false, false};
+int[] towerPrice = {100, 200, 200};
+color[] towerColours = {#7b9d32, #F098D7, #82E5F7};
+PVector[] originalLocations = {new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Constant, "copy" array to store where the towers are supposed to be
+PVector[] dragAndDropLocations = {new PVector(650, 50), new PVector(700, 50), new PVector(750, 50)}; // Where the currently dragged towers are
 
 ArrayList<PVector> towers; // Towers that are placed down
 
@@ -51,7 +52,6 @@ boolean withinBounds(int towerID) {
 //check if you drop in trash
 boolean trashDrop(int towerID) {
   PVector location = dragAndDropLocations[towerID];
-  if (location.x < 0 || location.x > 800 || location.y < 0 || location.y > 500) return true;
   if (location.x >= trashX1 && location.x <= trashX2 && location.y >= trashY1 && location.y <= trashY2) return true;
   return false;
 }
@@ -130,7 +130,6 @@ float shortestDist(PVector point) {
 // Will return if a drop is legal by looking at the shortest distance between the rectangle center and the path.
 boolean legalDrop(int towerID) {
   PVector heldLocation = dragAndDropLocations[towerID];
- 
   // checking if this tower overlaps any of the already placed towers
   for (int i = 0; i < towers.size(); i++) {
     PVector towerLocation = towers.get(i);
