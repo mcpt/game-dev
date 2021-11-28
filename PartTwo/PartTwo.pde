@@ -2,7 +2,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.HashSet;
 // Program main method
 void setup() {
   size(800, 500);
