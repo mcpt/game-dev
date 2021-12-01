@@ -112,12 +112,12 @@ void drawHealthBar() {
   fill(#830000);
   rectMode(CENTER);
   rect(721, 455, 132, 20);
-
+  int trueHealth = max(health, 0);
   //draw healthbar
   noStroke();
   rectMode(CORNER);
   fill(#FF3131);
-  rect(655, 445.5, health*12, 20); //the healthbar that changes based on hp
+  rect(655, 445.5, trueHealth*12, 20); //the healthbar that changes based on hp
   rectMode(CENTER);
   noFill();
 
@@ -125,7 +125,7 @@ void drawHealthBar() {
   stroke(0, 0, 0);
   textSize(14);
   fill(255, 255, 255);
-  text("Health:   "+health, 670, 462);
+  text("Health:   "+trueHealth, 670, 462);
 
   //put the heart.png image on screen
   imageMode(CENTER);
