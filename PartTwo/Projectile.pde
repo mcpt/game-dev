@@ -76,7 +76,7 @@ void handleCollision(int projectileID) {
     }
   }
 }
-// -------------- TEMPLATE CODE ENDS ---------------- (Participants will NOT need to code anything about this line)
+// -------------- TEMPLATE CODE ENDS ---------------- (Participants will NOT need to code anything above this line)
 
 // Code that is called when a projectile hits a balloon
 void hitBalloon(int projectileID, float[] balloonData) {
