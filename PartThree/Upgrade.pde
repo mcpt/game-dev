@@ -27,7 +27,7 @@ void drawRange() {
 void drawUpgrade() {
   strokeWeight(0);
   stroke(0);
-  fill(#000505);
+  fill(#C364FF);
   rectMode(CENTER);
   rect(upgradeLocation.x, upgradeLocation.y, 25, 25); 
   textSize(12);
@@ -36,8 +36,8 @@ void drawUpgrade() {
 void upgradeCheck() {
   if(pointRectCollision(mouseX, mouseY, upgradeLocation.x, upgradeLocation.y, 25) && mousePressed && towerClicked != -1) {
     int[] temp = towerData.get(towerClicked);
-    temp[upgrade]++;
+    temp[upgrade]++; currentBalance -= towerPrice[temp[projectileType]] / 2;
     towerData.set(towerClicked, temp);
-    println("upgrade level: " + temp[upgrade]);
+    println("tower number: " + (towerClicked + 1) + ", upgrade level: " + temp[upgrade]);
   }
 }

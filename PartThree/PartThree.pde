@@ -26,8 +26,13 @@ void draw() {
   drawHealthBar();
   drawBalanceDisplay();
   
+  //upgrading towers implementation
   drawUpgrade();
   upgradeCheck();
+  
+  //removing towers implementation
+  drawRemove();
+  removeCheck();
   
   towerClickCheck();
   drawRange();
