@@ -1,3 +1,4 @@
+//To upgrade towers, click them and their radius will show around them. Click the upgrade button to upgrade the tower to the next level
 PVector upgradeLocation = new PVector(150, 50);
 void towerClickCheck() {
   if (mousePressed) {
