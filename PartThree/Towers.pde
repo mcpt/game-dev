@@ -3,7 +3,7 @@ Encompasses: Displaying Towers & Tower Data (for projectiles)
 */
 
 
-final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3;
+final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3, upgrade = 4;
 ArrayList<int[]> towerData;
 int[] towerVisions = {200, 100, 100};
 int[] makeTowerData(int towerID) {  
@@ -12,21 +12,24 @@ int[] makeTowerData(int towerID) {
       10, // Cooldown between next projectile
       10, // Max cooldown
       towerVisions[def], // Tower Vision
-      0 // Projectile ID
+      0, // Projectile ID
+      1
     };
   } else if (towerID == eight) {
     return new int[] {
       25, // Cooldown between next projectile
       25, // Max cooldown
       towerVisions[eight], // Tower Vision
-      1 // Projectile ID
+      1, // Projectile ID
+      1
     };
   } else if (towerID == slow) {
     return new int[] {
       35,
       35,
       towerVisions[slow], // Tower Vision
-      2
+      2,
+      1
     };
   }
   return new int[] {}; //filler since we need to return something
@@ -73,14 +76,6 @@ void drawAllTowers() {
     } 
     else {
       drawTowerWithRotation(xPos, yPos, towerColours[towerType], new PVector(track.x, track.y));
-    }
-    if(pointRectCollision(mouseX, mouseY, xPos, yPos, towerSize)) {
-      // Drawing the tower range visually 
-      fill(127, 80);
-      stroke(127);
-      strokeWeight(4);
-      ellipseMode(RADIUS);
-      ellipse(xPos, yPos, data[towerVision], data[towerVision]);
     }
     fill(#4C6710);
     textSize(12);

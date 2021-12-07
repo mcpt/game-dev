@@ -26,6 +26,12 @@ void draw() {
   drawHealthBar();
   drawBalanceDisplay();
   
+  drawUpgrade();
+  upgradeCheck();
+  
+  towerClickCheck();
+  drawRange();
+  
   if (health <= 0) {
     drawLostAnimation();
   }
