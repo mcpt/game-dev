@@ -69,15 +69,6 @@ void drawBalloons() {
       i--;
       continue;
     }
-    
-    PVector position = getLocation(balloon[distanceTravelled]);
-    if (balloonSpikeCollision(position)) {
-      handleBalloonPop();
-      balloons.remove(i);
-      i--;
-      continue;
-    }
-    
     if (atEndOfPath(balloon[distanceTravelled])) {
       balloons.remove(i); // Removing the balloon from the list
       health--; // Lost a life.

@@ -36,8 +36,6 @@ void initDragAndDrop() {
   count = 0;
   towers = new ArrayList<PVector>();
   towerData = new ArrayList<int[]>();
-  spikeLocations = new ArrayList<PVector>();
-  spikeData = new ArrayList<Integer>();
 }
 
 // Use point to rectangle collision detection to check for mouse being within bounds of pick-up box
@@ -138,11 +136,4 @@ boolean legalDrop(int towerID) {
     if (pointRectCollision(heldLocation.x, heldLocation.y, towerLocation.x, towerLocation.y, towerSize)) return false;
   }
   return shortestDist(heldLocation) > PATH_RADIUS;
-}
-
-
-// Checks if the location of the spike is on the path
-boolean legalSpikeDrop() {
-  PVector heldLocation = spikeLocation;
-  return shortestDist(heldLocation) <= PATH_RADIUS;
 }

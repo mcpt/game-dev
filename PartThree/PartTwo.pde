@@ -7,7 +7,6 @@ import java.util.HashSet;
 void setup() {
   size(800, 500);
   loadHeartIcon();
-  loadSpikeIcon();
   initDragAndDrop();
   initPath();
   createFirstWave();
@@ -22,10 +21,6 @@ void draw() {
   drawTrash();
   drawSelectedTowers();
   dragAndDropInstructions();
-  
-  drawCurrentSpikeIcon();
-  displaySpikeCount();
-  drawAllSpikes();
 
   drawBalloons();
   drawHealthBar();
@@ -41,9 +36,6 @@ void mouseDragged() {
   if (currentlyDragging != notDragging) {
     dragAndDropLocations[currentlyDragging] = new PVector(mouseX + difX, mouseY + difY);
   }
-  if (spikeHeld) {
-    spikeLocation = new PVector(mouseX + difX, mouseY + difY);
-  }
 }
 
 // Whenever the user initially presses down on the mouse
@@ -51,7 +43,6 @@ void mousePressed() {
   for (int i = 0; i < towerCount; i++) {
     handlePickUp(i);
   }
-  handleSpikePickUp();
 }
 
 // Whenever the user releases their mouse
@@ -60,8 +51,4 @@ void mouseReleased() {
     handleDrop(currentlyDragging);
   }
   currentlyDragging = notDragging;
-  
-  if (spikeHeld) {
-    handleSpikeDrop();
-  }
 }
