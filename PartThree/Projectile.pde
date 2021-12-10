@@ -118,7 +118,7 @@ void handleProjectiles() {
 
     // Cooldown is 0 and there is a balloon that the tower tracks shoots a projectile
     if (data[cooldownRemaining] <= 0 && balloon != null) {
-      data[cooldownRemaining] = data[maxCooldown]; // Resets the cooldown
+      data[cooldownRemaining] = (int)(data[maxCooldown] * speedBoostAmount); // Resets the cooldown
 
       PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y);
 

@@ -27,6 +27,7 @@ void draw() {
   displayPowerups();
   drawAllSpikes();
   handleSlowdown();
+  handleSpeedBoost();
 
   drawBalloons();
   drawHealthBar();
@@ -53,6 +54,8 @@ void mousePressed() {
     handlePickUp(i);
   }
   handleSpikePickUp();
+  handleSlowdownPress();
+  handleSpeedBoostPress();
 }
 
 // Whenever the user releases their mouse
@@ -65,6 +68,4 @@ void mouseReleased() {
   if (spikeHeld) {
     handleSpikeDrop();
   }
-  
-  handleSlowdownPress();
 }
