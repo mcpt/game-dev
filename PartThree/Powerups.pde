@@ -7,7 +7,12 @@
 int powerupCount[] = {5, 3, 3}; // Amount of each powerup remaining
 final int spikes = 0, slowdown = 1, dmgBoost = 2;
 final int spikePierce = 3; // Amount of balloons the cluster of spikes will pop before disappearing
- 
+final int slowdownLength = 7; // Amount of time that a slowdown lasts for in seconds
+
+float slowdownAmount = 1; // The factor to multiply all balloon speeds by
+int slowdownRemaining = 0;
+final PVector slowdownLocation = new PVector(763, 208); 
+
 PImage spikeIcon; // Image for path spikes
 PVector spikeLocation = new PVector(763, 150); // Location of spike for drag and drop
 ArrayList<PVector> spikeLocations;
@@ -104,8 +109,27 @@ boolean balloonSpikeCollision(PVector position) {
   return false;
 }
 
-void displaySpikeCount() {
+void displayPowerups() {
+  fill(255);
+  text("Slowdowns remaining: " + powerupCount[slowdown], 655, 184);
+  
   color displayColour;
+  
+  if (mousePressed && withinSlowdownBounds() && powerupCount[slowdown] <= 0 && slowdownRemaining <= 0) {
+    displayColour = #F00000; // Display using red error colour
+  }
+  else if (slowdownRemaining > 0) {
+    displayColour = #81E5FF; // Display blue colour for slowdown in progress
+  }
+  else {
+    displayColour = #FFFFFF; // Display using white colour
+  }
+  
+  fill(displayColour);
+  ellipseMode(RADIUS);
+  
+  ellipse(slowdownLocation.x, slowdownLocation.y, 20, 20);
+  
   if (mousePressed && withinSpikeBounds() && powerupCount[spikes] <= 0) {
     displayColour = #F00000; // Display using red error colour
   }
@@ -117,4 +141,26 @@ void displaySpikeCount() {
   
   text("Spikes remaining: " + powerupCount[spikes], 625, 146);
   drawSpikeIcon(originalSpikeLocation, displayColour);
+}
+
+boolean withinSlowdownBounds() {
+  return pointRectCollision(mouseX, mouseY, slowdownLocation.x, slowdownLocation.y, 45);
+}
+
+void handleSlowdownPress() {
+  if (withinSlowdownBounds() && powerupCount[slowdown] > 0 && slowdownAmount == 1) {
+    powerupCount[slowdown]--;
+    slowdownAmount = 0.5;
+    slowdownRemaining = slowdownLength * 60;
+  }
+}
+
+void handleSlowdown() {
+  if (slowdownRemaining > 0) {
+    slowdownRemaining--;
+    
+    if (slowdownRemaining == 0) {
+      slowdownAmount = 1; // Revert to original speed
+    }
+  }
 }

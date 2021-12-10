@@ -24,8 +24,9 @@ void draw() {
   dragAndDropInstructions();
   
   drawCurrentSpikeIcon();
-  displaySpikeCount();
+  displayPowerups();
   drawAllSpikes();
+  handleSlowdown();
 
   drawBalloons();
   drawHealthBar();
@@ -64,4 +65,6 @@ void mouseReleased() {
   if (spikeHeld) {
     handleSpikeDrop();
   }
+  
+  handleSlowdownPress();
 }
