@@ -32,7 +32,7 @@ int[] makeTowerData(int towerID) {
       towerVisions[slow], // Tower Vision
       2,
       1,
-      0
+      0  
     };
   }
   return new int[] {}; //filler since we need to return something
