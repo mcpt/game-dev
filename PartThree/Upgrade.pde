@@ -36,6 +36,7 @@ int dmgFromProjectileType(int type){
 void drawTowerUI(){
   if(towerClicked != -1) {
     //draw outer box for upgrades
+    int[] temp = towerData.get(towerClicked);
     stroke(#add558);
     strokeWeight(1);
     fill(#E7EAB5);
@@ -43,7 +44,7 @@ void drawTowerUI(){
     fill(#444941);
     text("Current Level: level",98,426);
     text("range: "+ towerData.get(towerClicked)[2],104,446);
-    text("damage: "+ dmgFromProjectileType(towerData.get(towerClicked)[3]),204,446);
+    text("damage: "+ (dmgFromProjectileType(towerData.get(towerClicked)[3]) + temp[addDmg]),204,446);
     strokeWeight(2);
     stroke(#a8a89d,200);
     line(100,453,295,453);
@@ -76,7 +77,7 @@ void upgradeCheck() {
         if (temp[upgrade] == 2) { //first upgrade
           temp[maxCooldown] = 8; //increases attack speed
         } else {
-          defdmg++;
+          temp[addDmg]++;
         }
       } else if (temp[projectileType] == 1) {
         if (temp[upgrade] == 2) { //first upgrade
@@ -84,7 +85,7 @@ void upgradeCheck() {
         } else if (temp[upgrade] == 3) { //second upgrade
           shots = 16; //makes it into 16 shots 
         } else {
-          eightdmg++; //omre damage;
+          temp[addDmg]++; //more damage;
         }
       } else if (temp[projectileType] == 2) {
         if (temp[upgrade] == 2) {
