@@ -7,6 +7,7 @@
 // Current amount of money owned by the player
 int currentBalance = 750; // Give the user $750 of starting balance
 final int rewardPerBalloon = 15; // Money earned by popping a balloon
+final int rewardPerWave = 15; //Money earned per wave
 
 void handleBalloonPop() {
   // Reward the player for popping the balloon
@@ -18,6 +19,10 @@ void increaseBalance(int amount) {
   currentBalance += amount; // Increase the current balance by the amount given
 }
 
+//method to give user money for completing a wave
+void handleWaveReward() {
+   increaseBalance(rewardPerWave);
+}
 
 /** Checks to see if there is sufficient balance for purchasing a certain item
  *  Parameter "cost" is the cost of the tower to be purchased
