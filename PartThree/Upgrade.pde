@@ -1,4 +1,4 @@
-//To upgrade towers, click them and their radius will show around them. Click the upgrade button to upgrade the tower to the next level
+//To upgrade towers, click them and their radius will show around them. Click the upgrade button to upgrade the tpower to the next level
 PVector upgradeLocation = new PVector(145, 470);
 void towerClickCheck() {
   if (mousePressed) {
@@ -26,9 +26,9 @@ void drawRange() {
 
 // method to get damage numbers from the type of tower's projectile
 int dmgFromProjectileType(int type){
-  if(type==0) return 6;
-  else if(type==1) return 4;
-  else if(type==2) return 1;
+  if(type==0) return defdmg;
+  else if(type==1) return eightdmg;
+  else if(type==2) return slowdmg;
   return 0;
 }
 
@@ -64,13 +64,37 @@ void drawUpgrade() {
   rect(upgradeLocation.x, upgradeLocation.y, 86, 24,5); 
   textSize(16);
   fill(255);
-  text("Buy: $cost", upgradeLocation.x-40, upgradeLocation.y+4);
+  int[] temp = towerData.get(towerClicked);
+  text("Buy: $" + towerPrice[temp[projectileType]] / 2, upgradeLocation.x-40, upgradeLocation.y+4);
 }
 void upgradeCheck() {
   if((upgradeLocation.x - 43 <= mouseX && mouseX <= upgradeLocation.x + 43 && upgradeLocation.y - 12 <= mouseY && mouseY <= upgradeLocation.y + 12) && mousePressed && towerClicked != -1) {
     int[] temp = towerData.get(towerClicked);
-    temp[upgrade]++; currentBalance -= towerPrice[temp[projectileType]] / 2;
-    towerData.set(towerClicked, temp);
-    println("tower number: " + (towerClicked + 1) + ", upgrade level: " + temp[upgrade]);
-  }
+    if (currentBalance >= towerPrice[temp[projectileType]] / 2) {
+      temp[upgrade]++; currentBalance -= towerPrice[temp[projectileType]] / 2 ;
+      if (temp[projectileType] == 0) {
+        if (temp[upgrade] == 2) { //first upgrade
+          temp[maxCooldown] = 8; //increases attack speed
+        } else {
+          defdmg++;
+        }
+      } else if (temp[projectileType] == 1) {
+        if (temp[upgrade] == 2) { //first upgrade
+          temp[towerVision] += 50; //increases range
+        } else if (temp[upgrade] == 3) { //second upgrade
+          shots = 16; //makes it into 16 shots 
+        } else {
+          eightdmg++; //omre damage;
+        }
+      } else if (temp[projectileType] == 2) {
+        if (temp[upgrade] == 2) {
+          slowPercent = 0.5; //slow even more
+        } else {
+          temp[towerVision] += 50;
+        }
+      }
+      towerData.set(towerClicked, temp);
+      println("tower number: " + (towerClicked + 1) + ", upgrade level: " + temp[upgrade]);
+    }
+  } 
 }
