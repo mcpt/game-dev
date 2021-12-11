@@ -3,7 +3,7 @@ Encompasses: Displaying Towers & Tower Data (for projectiles)
 */
 
 
-final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3, upgrade = 4, addDmg = 5;
+final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3, upgrade = 4;
 ArrayList<int[]> towerData;
 int[] towerVisions = {200, 100, 100};
 int[] makeTowerData(int towerID) {  
@@ -13,8 +13,7 @@ int[] makeTowerData(int towerID) {
       10, // Max cooldown
       towerVisions[def], // Tower Vision
       0, // Projectile ID
-      1,
-      0
+      1
     };
   } else if (towerID == eight) {
     return new int[] {
@@ -22,8 +21,7 @@ int[] makeTowerData(int towerID) {
       25, // Max cooldown
       towerVisions[eight], // Tower Vision
       1, // Projectile ID
-      1,
-      0
+      1
     };
   } else if (towerID == slow) {
     return new int[] {
@@ -31,8 +29,7 @@ int[] makeTowerData(int towerID) {
       35,
       towerVisions[slow], // Tower Vision
       2,
-      1,
-      0  
+      1
     };
   }
   return new int[] {}; //filler since we need to return something

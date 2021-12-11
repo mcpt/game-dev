@@ -25,10 +25,24 @@ void drawRange() {
 }
 
 // method to get damage numbers from the type of tower's projectile
-int dmgFromProjectileType(int type){
-  if(type==0) return defdmg;
-  else if(type==1) return eightdmg;
-  else if(type==2) return slowdmg;
+int dmgFromProjectileType(int type, int[] temp){
+  if(type==0) {
+    int ret = defdmg;
+    if (temp[upgrade] >= 3) {
+      ret += temp[upgrade] - 2;
+    }
+    return ret;
+  }
+  else if(type==1) {
+    int ret = eightdmg;
+    if (temp[upgrade] >= 4) {
+      ret += temp[upgrade] - 3;
+    }
+    return ret;
+  }
+  else if(type==2) {
+    return slowdmg;
+  }
   return 0;
 }
 
@@ -44,7 +58,7 @@ void drawTowerUI(){
     fill(#444941);
     text("Current Level: level",98,426);
     text("range: "+ towerData.get(towerClicked)[2],104,446);
-    text("damage: "+ (dmgFromProjectileType(towerData.get(towerClicked)[3]) + temp[addDmg]),204,446);
+    text("damage: "+ (dmgFromProjectileType(temp[projectileType], temp)),204,446);
     strokeWeight(2);
     stroke(#a8a89d,200);
     line(100,453,295,453);
@@ -76,21 +90,13 @@ void upgradeCheck() {
       if (temp[projectileType] == 0) {
         if (temp[upgrade] == 2) { //first upgrade
           temp[maxCooldown] = 8; //increases attack speed
-        } else {
-          temp[addDmg]++;
         }
       } else if (temp[projectileType] == 1) {
-        if (temp[upgrade] == 2) { //first upgrade
-          temp[towerVision] += 50; //increases range
-        } else if (temp[upgrade] == 3) { //second upgrade
-          shots = 16; //makes it into 16 shots 
-        } else {
-          temp[addDmg]++; //more damage;
+        if (temp[upgrade] == 2) { //second upgrade
+          temp[towerVision] += 50;
         }
       } else if (temp[projectileType] == 2) {
-        if (temp[upgrade] == 2) {
-          slowPercent = 0.5; //slow even more
-        } else {
+        if (temp[upgrade] > 2) {
           temp[towerVision] += 50;
         }
       }
