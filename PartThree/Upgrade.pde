@@ -56,8 +56,8 @@ void drawTowerUI(){
     fill(#E7EAB5);
     rect(200,450,216,80,3);
     fill(#444941);
-    text("Current Level: level",98,426);
-    text("range: "+ towerData.get(towerClicked)[2],104,446);
+    text("Current Level: " + temp[upgrade],98,426);
+    text("range: "+ temp[towerVision],104,446);
     text("damage: "+ (dmgFromProjectileType(temp[projectileType], temp)),204,446);
     strokeWeight(2);
     stroke(#a8a89d,200);
