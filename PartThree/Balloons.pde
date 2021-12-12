@@ -19,7 +19,7 @@ void updatePositions(float[] balloon) {
   if (balloon[delay] == 0) {
 
     PVector position = getLocation(balloon[distanceTravelled]);
-    float travelSpeed = balloon[speed];
+    float travelSpeed = balloon[speed] * slowdownAmount; // Slow down the balloon if the slowdown powerup is engaged
     balloon[distanceTravelled] += travelSpeed; //Increases the balloon's total steps by the speed
 
     //Drawing of ballon
@@ -69,6 +69,15 @@ void drawBalloons() {
       i--;
       continue;
     }
+    
+    PVector position = getLocation(balloon[distanceTravelled]);
+    if (balloonSpikeCollision(position)) {
+      handleBalloonPop();
+      balloons.remove(i);
+      i--;
+      continue;
+    }
+    
     if (atEndOfPath(balloon[distanceTravelled])) {
       balloons.remove(i); // Removing the balloon from the list
       health--; // Lost a life.
