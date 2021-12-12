@@ -20,7 +20,7 @@ void increaseBalance(int amount) {
 }
 
 //method to give user money for completing a wave
-void handleWaveReward() {
+void handleWaveReward(int waveNum) {
    increaseBalance(baseRewardPerWave * waveNum);
 }
 
