@@ -26,6 +26,20 @@ void draw() {
   drawHealthBar();
   drawBalanceDisplay();
   
+  drawTowerUI();
+  /*
+  //upgrading towers implementation
+  drawUpgrade();
+  upgradeCheck();
+  
+  //removing towers implementation
+  drawRemove();
+  removeCheck();
+  */
+  
+  towerClickCheck();
+  drawRange();
+  
   if (health <= 0) {
     drawLostAnimation();
   }

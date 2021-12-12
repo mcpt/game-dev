@@ -10,6 +10,11 @@ ArrayList<HashSet<Integer>> balloonsHit = new ArrayList<HashSet<Integer>>(); // 
 final int damage = 0, pierce = 1, angle = 2, currDistTravelled = 3, maxDistTravelled = 4, thickness = 5, dmgType = 6; // Constants to make accessing the projectileData array more convenient
 final int projectileRadius = 11;
 
+//changed values to help upgrades
+int defdmg = 6, eightdmg = 4, slowdmg = 1;
+int shots = 8;
+float slowPercent = 0.7;
+
 // Adds a new projectile
 void createProjectile(PVector centre, PVector vel, float damage, int pierce, float maxDistTravelled, float thickness, int dmgType) {
   balloonsHit.add(new HashSet<Integer>()); // Adds an empty set to the balloonsHit structure - this represents the current projectile, not having hit any balloons yet.
@@ -85,7 +90,11 @@ void hitBalloon(int projectileID, float[] balloonData) {
   balloonData[hp] -= data[damage]; // Deals damage
   
   if (data[dmgType] == slow && balloonData[slowed] == 0) { // Slows down the balloon
-    balloonData[speed] *= 0.7;
+    float slowNum = slowPercent;
+    if (data[upgrade] >= 2) {
+      slowNum -= 0.2;
+    }
+    balloonData[speed] *= slowNum;
     balloonData[slowed] = 1;
   }
 }
@@ -123,7 +132,10 @@ void handleProjectiles() {
       PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y);
 
       if (data[projectileType] == def) {
-        final int speed = 24, damage = 6, pierce = 1, thickness = 2, maxTravelDist = 500;
+        int speed = 24, damage = defdmg, pierce = 1, thickness = 2, maxTravelDist = 500;
+        if (data[upgrade] >= 3) {
+          damage = defdmg + data[upgrade] - 2;
+        }
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
 
         PVector velocity = PVector.mult(unitVector, speed);
@@ -131,17 +143,24 @@ void handleProjectiles() {
         // Default type
       } else if (data[projectileType] == eight) {
         // Spread in 8
-        for (int j = 0; j < 8; j++) {
-          final int speed = 18, damage = 4, pierce = 2, thickness = 2, maxTravelDist = 150;
-          float angle = (PI * 2) * j / 8;
+        int curShots = shots;
+        if (data[upgrade] >= 3) {
+          curShots = shots + 8;
+        }
+        
+        for (int j = 0; j < curShots; j++) {
+          int speed = 18, damage = eightdmg, pierce = 2, thickness = 2, maxTravelDist = 150;
+          float angle = (PI * 2) * j / curShots;
           PVector unitVector = PVector.div(toMouse, toMouse.mag());
-
+          if (data[upgrade] >= 4) {
+            damage = eightdmg + data[upgrade] - 3;
+          }
           PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
           createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, eight);
         }
       } else if (data[projectileType] == slow) {
         //glue gunner - slows balloons
-        final int speed = 15, damage = 1, pierce = 7, thickness = 4, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
+        final int speed = 15, damage = slowdmg, pierce = 7, thickness = 4, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
         PVector unitVector = PVector.div(toMouse, toMouse.mag());
 
         PVector velocity = PVector.mult(unitVector, speed);
