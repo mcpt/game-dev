@@ -10,7 +10,7 @@ void setup() {
   loadSpikeIcon();
   initDragAndDrop();
   initPath();
-  createFirstWave();
+  createWaves();
 }
 
 void draw() {
@@ -43,7 +43,7 @@ void draw() {
   drawRemove();
   removeCheck();
   */
-  
+  nextWave();
   towerClickCheck();
   drawRange();
   

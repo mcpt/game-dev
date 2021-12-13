@@ -103,7 +103,7 @@ void dragAndDropInstructions() {
   text("Pick up tower from here!", 620, 20);
   text("You can't place towers on the path of the balloons!", 200, 20);
   text("Place a tower into the surrounding area to put it in the trash.", 200, 40);
-  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nTower Held: " + currentlyDragging + "\ntowerClicked: " + towerClicked, 15, 20);
+  text("Mouse X: " + mouseX + "\nMouse Y: " + mouseY + "\nMouse held: " + mousePressed + "\nTower Held: " + currentlyDragging + "\ntowerClicked: " + towerClicked + "\nWave: " + currentWave, 15, 20);
 }
 
 
