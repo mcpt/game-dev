@@ -73,6 +73,7 @@ void mousePressed() {
   handleSpikePickUp();
   handleSlowdownPress();
   handleSpeedBoostPress();
+  handleNextLevel();
 }
 
 // Whenever the user releases their mouse

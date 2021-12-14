@@ -156,18 +156,26 @@ boolean pointRectCollision(float x1, float y1, float x2, float y2, float sizeX, 
   return (abs(x2 - x1) <= sizeX / 2) && (abs(y2 - y1) <= sizeY / 2);
 }
 
-void drawNextLevelButton(){
+void handleNextLevel() {
   PVector center = new PVector(100,400);
   PVector lengths = new PVector(100,100);
+  if (!playingLevel && pointRectCollision(mouseX,mouseY,center.x,center.y,lengths.x,lengths.y) && levelNum < levels.size()-1){
+    playingLevel = true;
+    levelNum++;
+  }
+}
+void drawNextLevelButton(){
+  PVector center = new PVector(60,425);
+  PVector lengths = new PVector(100,70);
   
   fill(0,150,0);
   if (playingLevel){ 
     fill(0,150,0,100);
   }
-  rect(center.x,center.y,lengths.x,lengths.y);
   
-  if (!playingLevel && pointRectCollision(mouseX,mouseY,center.x,center.y,lengths.x,lengths.y) && mousePressed && levelNum < levels.size()-1){
-    playingLevel = true;
-    levelNum++;
-  }
+  rect(center.x,center.y,lengths.x,lengths.y, 10);
+  fill(255);
+  
+  text("Next Level", center.x - 28, center.y + 4);
+  
 }
