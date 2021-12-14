@@ -2,8 +2,8 @@
 Encompasses: Displaying Towers & Tower Data (for projectiles)
 */
 
-
 final int cooldownRemaining = 0, maxCooldown = 1, towerVision = 2, projectileType = 3, upgrade = 4;
+
 ArrayList<int[]> towerData;
 int[] towerVisions = {200, 100, 100};
 int[] makeTowerData(int towerID) {  
@@ -70,12 +70,26 @@ void drawAllTowers() {
     float xPos = towers.get(i).x, yPos = towers.get(i).y;
     int[] data = towerData.get(i);
     int towerType = data[projectileType];
-    PVector track = track(towers.get(i), data[towerVision]);
+    
+    PVector track = null;
+    if (playingLevel){
+      track = track(towers.get(i), data[towerVision]);
+    }
+    
     if (track == null) {
       drawTowerIcon(xPos, yPos, towerColours[towerType]);
     } 
     else {
       drawTowerWithRotation(xPos, yPos, towerColours[towerType], new PVector(track.x, track.y));
+    }
+    
+    if(pointRectCollision(mouseX, mouseY, xPos, yPos, towerSize)) {
+      // Drawing the tower range visually 
+      fill(127, 80);
+      stroke(127);
+      strokeWeight(4);
+      ellipseMode(RADIUS);
+      ellipse(xPos, yPos, data[towerVision], data[towerVision]);
     }
     fill(#4C6710);
     textSize(12);

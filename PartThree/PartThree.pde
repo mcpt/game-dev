@@ -10,7 +10,7 @@ void setup() {
   loadSpikeIcon();
   initDragAndDrop();
   initPath();
-  createFirstWave();
+  createWaves();
 }
 
 void draw() {
@@ -29,9 +29,12 @@ void draw() {
   handleSlowdown();
   handleSpeedBoost();
 
-  drawBalloons();
+  if (playingLevel){
+    drawBalloons();
+  }
   drawHealthBar();
   drawBalanceDisplay();
+  drawNextLevelButton();
   
   drawTowerUI();
   /*
