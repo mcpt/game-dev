@@ -16,7 +16,7 @@ void createWaves() {
   //(level balloons are for, number of balloons, first balloon delay, delay between the sequence of balloons, speed, hp)
   createBalloons(0,5,0,20,1,20);
   createBalloons(0,100,30,20,2,60);
-
+  createBalloons(0,1,2300,0,0.6,1000);
   createBalloons(1,5,0,20,1,100);
 }
 
@@ -28,7 +28,7 @@ void createLevels(int num){
 
 void createBalloons(int level, int numBalloons, float delay, float delayInBetween, float speed, float hp){
   for (int i = 0; i < numBalloons; i++){
-    levels.get(level).add(new float[]{0,delay + i * delayInBetween , speed, hp, hp, 0, levels.get(level).size()});
+    levels.get(level).add(new float[]{0, delay + i * delayInBetween, speed, hp, hp, 0, levels.get(level).size()});
   }
 }
 

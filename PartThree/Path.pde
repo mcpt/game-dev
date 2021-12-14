@@ -10,6 +10,29 @@ final int startArc = 0, centerArc = 1, endArc = 2, arcValues = 3;
 final int PATH_RADIUS = 20;
 float pathLength;
 
+void initPoints() {
+  addLine(0,100,300,100);
+  addSmoothArc(50,PI*3/4);
+  addSmoothLine(70);
+  addSmoothArc(-50,-PI);
+  addSmoothLine(100);
+  addSmoothArc(-50,-PI/2);
+  addSmoothArc(75,PI/3);
+  addSmoothArc(125,PI/2);
+  addSmoothLine(40);
+  addSmoothArc(100,PI/2);
+  
+  addLine(0,300,300,300);
+  addSmoothArc(50,PI*3/4);
+  addSmoothLine(70);
+  addSmoothArc(-50,-PI);
+  addSmoothLine(100);
+  addSmoothArc(-50,-PI/2);
+  addSmoothArc(75,PI/3);
+  addSmoothArc(125,PI/2);
+  addSmoothLine(40);
+  addSmoothArc(100,PI/2);  
+}
 
 void addLine(float startX, float startY, float endX, float endY){
   pathSegments.add(new ArrayList<PVector>());
@@ -100,16 +123,7 @@ void addSmoothLine(int steps){
 
 
 void initPath() {  
-  addLine(0,100,300,100);
-  addSmoothArc(50,PI);
-  addSmoothLine(70);
-  addSmoothArc(-50,-PI);
-  addSmoothLine(100);
-  addSmoothArc(-50,-PI/2);
-  addSmoothArc(75,PI/3);
-  addSmoothArc(125,PI/2);
-  addSmoothLine(40);
-  addSmoothArc(100,PI/2);  
+ initPoints();
  
  for (int i = 0; i < pathSegments.size(); i++) {
     ArrayList<PVector> pathSegment = pathSegments.get(i); 
