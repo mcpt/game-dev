@@ -103,8 +103,9 @@ void drawBalloons() {
       // When you remove a balloon from the list, all the indexes of the balloons "higher-up" in the list will decrement by 1
     }
   }
-  if (balloons.size() == 0){
+  if (balloons.size() == 0 && playingLevel){
     playingLevel = false;
+    handleWaveReward(levelNum + 1);
   }
 }
 

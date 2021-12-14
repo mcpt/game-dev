@@ -72,7 +72,7 @@ void drawAllTowers() {
     int towerType = data[projectileType];
     
     PVector track = null;
-    if (playingLevel){
+    if (playingLevel) {
       track = track(towers.get(i), data[towerVision]);
     }
     

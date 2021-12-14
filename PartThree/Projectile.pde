@@ -119,7 +119,7 @@ PVector track(PVector towerLocation, int vision) {
 
 // Handles all projectile creation
 void handleProjectiles() {
-  if (playingLevel){
+  if (playingLevel) {
     for (int i = 0; i < towers.size(); i++) {
       PVector location = towers.get(i);
       int[] data = towerData.get(i);
