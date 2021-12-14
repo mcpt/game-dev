@@ -4,9 +4,8 @@ Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End
 
 ArrayList<ArrayList<float[]>> levels = new ArrayList<ArrayList<float[]>>();
 ArrayList<float[]> balloons;
-final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3, slowed = 4, ID = 5;
+final int distanceTravelled = 0, delay = 1, speed = 2, maxHP = 3, hp = 4, slowed = 5, ID = 6;
 final int balloonRadius = 25; //Radius of the balloon
-final int maxBalloonHP = 50;
 
 int levelNum = -1;
 boolean playingLevel = false;
@@ -14,11 +13,11 @@ boolean playingLevel = false;
 void createWaves() {
   createLevels(2);
   
-  //(level balloons are for, number of balloons, first balloon delay, deley between the sequence of balloons, speed, hp)
-  createBalloons(0,5,0,20,1,maxBalloonHP);
-  createBalloons(0,100,30,20,2,maxBalloonHP);
+  //(level balloons are for, number of balloons, first balloon delay, delay between the sequence of balloons, speed, hp)
+  createBalloons(0,5,0,20,1,20);
+  createBalloons(0,100,30,20,2,60);
 
-  createBalloons(1,5,0,20,1,maxBalloonHP);
+  createBalloons(1,5,0,20,1,100);
 }
 
 void createLevels(int num){
@@ -29,7 +28,7 @@ void createLevels(int num){
 
 void createBalloons(int level, int numBalloons, float delay, float delayInBetween, float speed, float hp){
   for (int i = 0; i < numBalloons; i++){
-    levels.get(level).add(new float[]{0,delay + i * delayInBetween , speed, hp, 0, levels.get(level).size()});
+    levels.get(level).add(new float[]{0,delay + i * delayInBetween , speed, hp, hp, 0, levels.get(level).size()});
   }
 }
 
@@ -57,7 +56,7 @@ void updatePositions(float[] balloon) {
     //draw mini healthbar
     noStroke();
     fill(#FF3131);
-    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / maxBalloonHP), hbWidth); //the healthbar that changes based on hp
+    rect(position.x - hbLength / 2, position.y - (balloonRadius), hbLength * (balloon[hp] / balloon[maxHP]), hbWidth); //the healthbar that changes based on hp
  
     noFill();
   
