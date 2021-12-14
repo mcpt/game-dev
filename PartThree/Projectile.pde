@@ -66,7 +66,7 @@ void handleProjectileMovement(int projectileID) {
 void handleCollision(int projectileID) {
   float[] data = projectileData.get(projectileID);
   for (float[] balloon : balloons) {
-    if (balloon[delay] != 0) continue; // If the balloon hasn't entered yet, don't count it
+    if (balloon[delay] > 0) continue; // If the balloon hasn't entered yet, don't count it
     PVector position = getLocation(balloon[distanceTravelled]);
     if (distToProjectile(projectileID, position) <= balloonRadius / 2 + data[thickness] / 2) {
       if (data[pierce] == 0 || balloonsHit.get(projectileID).contains((int) balloon[ID])) continue; // Already hit the balloon / already used up its max pierce
@@ -94,7 +94,7 @@ void hitBalloon(int projectileID, float[] balloonData) {
 PVector track(PVector towerLocation, int vision) {
   float maxDist = 0;
   PVector location = null;
-  for (float[] balloon : balloons) {
+  for (float[] balloon : levels.get(levelNum)) {
     PVector balloonLocation = getLocation(balloon[distanceTravelled]);
     // Checks if the tower can see the balloon
     if (dist(balloonLocation.x, balloonLocation.y, towerLocation.x, towerLocation.y) <= vision) {
@@ -110,42 +110,44 @@ PVector track(PVector towerLocation, int vision) {
 
 // Handles all projectile creation
 void handleProjectiles() {
-  for (int i = 0; i < towers.size(); i++) {
-    PVector location = towers.get(i);
-    int[] data = towerData.get(i);
-    data[cooldownRemaining]--;
-    PVector balloon = track(location, data[towerVision]);
-
-    // Cooldown is 0 and there is a balloon that the tower tracks shoots a projectile
-    if (data[cooldownRemaining] <= 0 && balloon != null) {
-      data[cooldownRemaining] = data[maxCooldown]; // Resets the cooldown
-
-      PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y);
-
-      if (data[projectileType] == def) {
-        final int speed = 24, damage = 6, pierce = 1, thickness = 2, maxTravelDist = 500;
-        PVector unitVector = PVector.div(toMouse, toMouse.mag());
-
-        PVector velocity = PVector.mult(unitVector, speed);
-        createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, def);
-        // Default type
-      } else if (data[projectileType] == eight) {
-        // Spread in 8
-        for (int j = 0; j < 8; j++) {
-          final int speed = 18, damage = 4, pierce = 2, thickness = 2, maxTravelDist = 150;
-          float angle = (PI * 2) * j / 8;
+  if (playingLevel){
+    for (int i = 0; i < towers.size(); i++) {
+      PVector location = towers.get(i);
+      int[] data = towerData.get(i);
+      data[cooldownRemaining]--;
+      PVector balloon = track(location, data[towerVision]);
+  
+      // Cooldown is 0 and there is a balloon that the tower tracks shoots a projectile
+      if (data[cooldownRemaining] <= 0 && balloon != null) {
+        data[cooldownRemaining] = data[maxCooldown]; // Resets the cooldown
+  
+        PVector toMouse = new PVector(balloon.x - location.x, balloon.y - location.y);
+  
+        if (data[projectileType] == def) {
+          final int speed = 24, damage = 6, pierce = 1, thickness = 2, maxTravelDist = 500;
           PVector unitVector = PVector.div(toMouse, toMouse.mag());
-
-          PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
-          createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, eight);
+  
+          PVector velocity = PVector.mult(unitVector, speed);
+          createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, def);
+          // Default type
+        } else if (data[projectileType] == eight) {
+          // Spread in 8
+          for (int j = 0; j < 8; j++) {
+            final int speed = 18, damage = 4, pierce = 2, thickness = 2, maxTravelDist = 150;
+            float angle = (PI * 2) * j / 8;
+            PVector unitVector = PVector.div(toMouse, toMouse.mag());
+  
+            PVector velocity = PVector.mult(unitVector, speed).rotate(angle);
+            createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, eight);
+          }
+        } else if (data[projectileType] == slow) {
+          //glue gunner - slows balloons
+          final int speed = 15, damage = 1, pierce = 7, thickness = 4, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
+          PVector unitVector = PVector.div(toMouse, toMouse.mag());
+  
+          PVector velocity = PVector.mult(unitVector, speed);
+          createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, slow);
         }
-      } else if (data[projectileType] == slow) {
-        //glue gunner - slows balloons
-        final int speed = 15, damage = 1, pierce = 7, thickness = 4, maxTravelDist = 220; //slow-ish speed, low damage, high pierce, low range
-        PVector unitVector = PVector.div(toMouse, toMouse.mag());
-
-        PVector velocity = PVector.mult(unitVector, speed);
-        createProjectile(location, velocity, damage, pierce, maxTravelDist, thickness, slow);
       }
     }
   }

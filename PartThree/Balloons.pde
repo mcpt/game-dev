@@ -2,25 +2,43 @@
 Encompasses: Displaying Balloons, Waves & Sending Balloons, Balloon Reaching End of Path
 */
 
-ArrayList<float[]> balloons = new ArrayList<float[]>();
+ArrayList<ArrayList<float[]>> levels = new ArrayList<ArrayList<float[]>>();
+ArrayList<float[]> balloons;
 final int distanceTravelled = 0, delay = 1, speed = 2, hp = 3, slowed = 4, ID = 5;
 final int balloonRadius = 25; //Radius of the balloon
 final int maxBalloonHP = 50;
-void createFirstWave() {
-//{Number of "steps" taken, frames of delay before first step, speed, hp, slowed (0=no, 1=yes)}
-  for(int i = 0; i <= 100; i++) {
-    balloons.add(new float[]{0, i * 10 + 100, random(2, 5), maxBalloonHP, 0, i});
+
+int levelNum = -1;
+boolean playingLevel = false;
+
+void createWaves() {
+  createLevels(2);
+  
+  //(level balloons are for, number of balloons, first balloon delay, deley between the sequence of balloons, speed, hp)
+  createBalloons(0,5,0,20,1,maxBalloonHP);
+  createBalloons(0,100,30,20,2,maxBalloonHP);
+
+  createBalloons(1,5,0,20,1,maxBalloonHP);
+}
+
+void createLevels(int num){
+  for (int i = 0; i < num; i++){
+    levels.add(new ArrayList<float[]>());
+  }
+}
+
+void createBalloons(int level, int numBalloons, float delay, float delayInBetween, float speed, float hp){
+  for (int i = 0; i < numBalloons; i++){
+    levels.get(level).add(new float[]{0,delay + i * delayInBetween , speed, hp, 0, levels.get(level).size()});
   }
 }
 
 // Displays and moves balloons
 void updatePositions(float[] balloon) {
   // Only when balloonProps[1] is 0 (the delay) will the balloons start moving.
-  if (balloon[delay] == 0) {
-
+  if (balloon[delay] < 0) {
     PVector position = getLocation(balloon[distanceTravelled]);
-    float travelSpeed = balloon[speed];
-    balloon[distanceTravelled] += travelSpeed; //Increases the balloon's total steps by the speed
+    balloon[distanceTravelled] += balloon[speed]; //Increases the balloon's total steps by the speed
 
     //Drawing of ballon
     ellipseMode(CENTER);
@@ -55,11 +73,12 @@ void updatePositions(float[] balloon) {
     ellipse(position.x, position.y, balloonRadius, balloonRadius);
 
   } else {
-    balloon[delay]--;
+    balloon[delay]-=balloon[speed];
   }
 }
 
 void drawBalloons() {
+  balloons = levels.get(levelNum);
   for (int i = 0; i < balloons.size(); i++) {
     float[] balloon = balloons.get(i);
     updatePositions(balloon);
@@ -69,26 +88,16 @@ void drawBalloons() {
       i--;
       continue;
     }
-    if (atEndOfPath(balloon[distanceTravelled])) {
+    if (balloon[distanceTravelled] >= pathLength) {
       balloons.remove(i); // Removing the balloon from the list
       health--; // Lost a life.
       i--; // Must decrease this counter variable, since the "next" balloon would be skipped
       // When you remove a balloon from the list, all the indexes of the balloons "higher-up" in the list will decrement by 1
     }
   }
-}
-
-// Similar code to distance along path
-boolean atEndOfPath(float travelDistance) {
-  float totalPathLength = 0;
-  for (int i = 0; i < points.size() - 1; i++) {
-    PVector currentPoint = points.get(i);
-    PVector nextPoint = points.get(i + 1);
-    float distance = dist(currentPoint.x, currentPoint.y, nextPoint.x, nextPoint.y);
-    totalPathLength += distance;
+  if (balloons.size() == 0){
+    playingLevel = false;
   }
-  if (travelDistance >= totalPathLength) return true; // This means the total distance travelled is enough to reach the end
-  return false;
 }
 
 // ------- HP SYSTEM --------
@@ -131,4 +140,26 @@ void drawHealthBar() {
   imageMode(CENTER);
   image(heart, 650, 456);
   noFill();
+}
+
+//Next level Button
+boolean pointRectCollision(float x1, float y1, float x2, float y2, float sizeX, float sizeY) {
+  //            --X Distance--               --Y Distance--
+  return (abs(x2 - x1) <= sizeX / 2) && (abs(y2 - y1) <= sizeY / 2);
+}
+
+void drawNextLevelButton(){
+  PVector center = new PVector(100,400);
+  PVector lengths = new PVector(100,100);
+  
+  fill(0,150,0);
+  if (playingLevel){ 
+    fill(0,150,0,100);
+  }
+  rect(center.x,center.y,lengths.x,lengths.y);
+  
+  if (!playingLevel && pointRectCollision(mouseX,mouseY,center.x,center.y,lengths.x,lengths.y) && mousePressed && levelNum < levels.size()-1){
+    playingLevel = true;
+    levelNum++;
+  }
 }

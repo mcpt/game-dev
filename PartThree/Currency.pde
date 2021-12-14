@@ -5,7 +5,7 @@
  */
 
 // Current amount of money owned by the player
-int currentBalance = 750; // Give the user $750 of starting balance
+int currentBalance = 100000; // Give the user $750 of starting balance
 final int rewardPerBalloon = 15; // Money earned by popping a balloon
 
 void handleBalloonPop() {

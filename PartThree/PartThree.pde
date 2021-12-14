@@ -9,7 +9,7 @@ void setup() {
   loadHeartIcon();
   initDragAndDrop();
   initPath();
-  createFirstWave();
+  createWaves();
 }
 
 void draw() {
@@ -22,9 +22,12 @@ void draw() {
   drawSelectedTowers();
   dragAndDropInstructions();
 
-  drawBalloons();
+  if (playingLevel){
+    drawBalloons();
+  }
   drawHealthBar();
   drawBalanceDisplay();
+  drawNextLevelButton();
   
   if (health <= 0) {
     drawLostAnimation();

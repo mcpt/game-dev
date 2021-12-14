@@ -116,12 +116,49 @@ float pointDistToLine(PVector start, PVector end, PVector point) {
   return dist(point.x, point.y, projection.x, projection.y);
 }
 
+float pointDistToArc(PVector start, PVector center, PVector end, PVector arcData, PVector point){
+  if (abs(arcData.y) < radians(360)){
+    float[] towerAngles = new float[2];
+    towerAngles[0] = atan2(point.y-center.y,point.x-center.x) - arcData.x;
+    
+    if (towerAngles[0] < 0){
+      towerAngles[1] = towerAngles[0] + radians(360);
+    }
+    else if(towerAngles[0] > 0){
+      towerAngles[1] = towerAngles[0] - radians(360);
+    }else{
+      towerAngles[1] = 0;
+    }
+    
+    for (float towerAngle: towerAngles){
+      float t = towerAngle/arcData.y;
+      if (t >= 0 && t <= 1){
+        return abs(dist(point.x,point.y,center.x,center.y)-arcData.z);
+      }
+    }
+  }
+  return min(dist(point.x,point.y,start.x,start.y),dist(point.x,point.y,end.x,end.y));
+}
+
 float shortestDist(PVector point) {
   float answer = Float.MAX_VALUE;
-  for (int i = 0; i < points.size() - 1; i++) {
-    PVector start = points.get(i);
-    PVector end = points.get(i + 1);
-    float distance = pointDistToLine(start, end, point);
+  float distance = Float.MAX_VALUE;
+  for (int i = 0; i < pathSegments.size(); i++) {
+    ArrayList<PVector> pathSegment = pathSegments.get(i);
+
+    if (pathSegment.size() == 2){
+      PVector startPoint = pathSegment.get(start);
+      PVector endPoint = pathSegment.get(end);
+      distance = pointDistToLine(startPoint, endPoint, point);
+    }else{
+      PVector centerPoint = pathSegment.get(centerArc);
+      PVector arcData = pathSegment.get(arcValues);
+      if(dist(point.x,point.y,centerPoint.x,centerPoint.y) < arcData.z + 30){
+        PVector startPoint = pathSegment.get(startArc);
+        PVector endPoint = pathSegment.get(endArc);
+        distance = pointDistToArc(startPoint, centerPoint, endPoint,arcData, point);
+      }
+    }
     answer = min(answer, distance);
   }
   return answer;
