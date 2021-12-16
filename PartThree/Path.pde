@@ -12,18 +12,7 @@ float pathLength;
 
 void initPoints() {
   addLine(0,100,300,100);
-  addSmoothArc(50,PI*3/4);
-  addSmoothLine(70);
-  addSmoothArc(-50,-PI);
-  addSmoothLine(100);
-  addSmoothArc(-50,-PI/2);
-  addSmoothArc(75,PI/3);
-  addSmoothArc(125,PI/2);
-  addSmoothLine(40);
-  addSmoothArc(100,PI/2);
-  
-  addLine(0,300,300,300);
-  addSmoothArc(50,PI*3/4);
+  addSmoothArc(50,PI);
   addSmoothLine(70);
   addSmoothArc(-50,-PI);
   addSmoothLine(100);
