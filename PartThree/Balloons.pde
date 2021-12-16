@@ -73,7 +73,7 @@ void updatePositions(float[] balloon) {
     ellipse(position.x, position.y, balloonRadius, balloonRadius);
 
   } else {
-    balloon[delay]-=balloon[speed];
+    balloon[delay]--;
   }
 }
 
